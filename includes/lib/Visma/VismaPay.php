@@ -70,7 +70,7 @@ class VismaPay
 		else
 			$payment_data['plugin_info'] .= '0';
 
-		$payment_data['plugin_info'] .= '|1.0.0';
+		$payment_data['plugin_info'] .= '|1.0.1';
 
 		return $this->makeRequest($url, $payment_data);
 	}
