@@ -3,13 +3,13 @@
  * Plugin Name: Visma Pay Embedded Card Payment Gateway
  * Plugin URI: https://www.vismapay.com/docs
  * Description: Visma Pay Payment Gateway Embedded Card Integration for Woocommerce
- * Version: 1.0.1
+ * Version: 1.0.2
  * Author: Visma
  * Author URI: https://www.visma.fi/vismapay/
  * Text Domain: visma-pay-embedded-card-payment-gateway
  * Domain Path: /languages
  * WC requires at least: 3.0.0
- * WC tested up to: 5.1.0
+ * WC tested up to: 6.2.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -298,7 +298,7 @@ function init_visma_pay_embedded_card_gateway()
 			$payment = new Visma\VismaPay($this->api_key, $this->private_key, 'w3.1', new Visma\VismaPayWPConnector());
 
 			if($this->send_receipt == 'yes')
-				$receipt_mail = $wc_b_email;
+				$receipt_mail = $order->get_billing_email();
 			else
 				$receipt_mail = '';
 
@@ -436,7 +436,7 @@ function init_visma_pay_embedded_card_gateway()
 				$return = null;
 			}
 
-			if($_REQUEST['pay_for_order'] == true)
+			if(isset($_REQUEST['pay_for_order']) && $_REQUEST['pay_for_order'] == true)
 			{
 				echo json_encode($return);
 				exit();
@@ -771,7 +771,7 @@ function init_visma_pay_embedded_card_gateway()
 						$settlement_msg = __('Settlement failed. Either the payment has already been settled or the payment gateway refused to settle payment for given transaction.', 'visma-pay-embedded-card-payment-gateway');
 						break;
 					default:
-						$settlement_msg = __('Settlement failed. Unkown error.', 'visma-pay-embedded-card-payment-gateway');
+						$settlement_msg = __('Settlement failed. Unknown error.', 'visma-pay-embedded-card-payment-gateway');
 						break;
 				}
 			}
