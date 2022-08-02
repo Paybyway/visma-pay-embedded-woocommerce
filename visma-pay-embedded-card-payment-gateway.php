@@ -3,13 +3,13 @@
  * Plugin Name: Visma Pay Embedded Card Payment Gateway
  * Plugin URI: https://www.vismapay.com/docs
  * Description: Visma Pay Payment Gateway Embedded Card Integration for Woocommerce
- * Version: 1.0.2
+ * Version: 1.0.3
  * Author: Visma
  * Author URI: https://www.visma.fi/vismapay/
  * Text Domain: visma-pay-embedded-card-payment-gateway
  * Domain Path: /languages
  * WC requires at least: 3.0.0
- * WC tested up to: 6.2.1
+ * WC tested up to: 6.7.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -242,10 +242,10 @@ function init_visma_pay_embedded_card_gateway()
 				}
 
 				if($this->amex_logo === 'yes')
-					echo '<div class="vpe-card-brand-container"><img class="vpe-card-brand-logo" src="' . esc_url($img_url) . 'dinersclub.png" alt="American Express" /></div>';
+					echo '<div class="vpe-card-brand-container"><img class="vpe-card-brand-logo" src="' . esc_url($img_url) . 'americanexpress.png" alt="American Express" /></div>';
 
 				if($this->diners_logo === 'yes')
-					echo '<div class="vpe-card-brand-container"><img class="vpe-card-brand-logo" src="' . esc_url($img_url) . 'americanexpress.png" alt="Diners" /></div>';
+					echo '<div class="vpe-card-brand-container"><img class="vpe-card-brand-logo" src="' . esc_url($img_url) . 'dinersclub.png" alt="Diners" /></div>';
 
 				echo $clear_both . '</div>' . $clear_both;
 			}

@@ -3,12 +3,12 @@ Contributors: hsuvant
 Donate link: 
 Tags: payment gateway, visma, pay, verkkomaksut, korttimaksut, vismapay
 Requires at least: 3.3
-Tested up to: 5.9.1
+Tested up to: 6.0.1
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 WC requires at least: 3.0.0
-WC tested up to: 6.2.1
+WC tested up to: 6.7.0
 
 Visma Pay plugin for Woocommerce.
 
@@ -40,7 +40,17 @@ Card payments
 
 
 == Changelog ==
--
+
+= 1.0.2 =
+* Updated 'tested up to' versions.
+* Fixed bug with card brand logos
+
+= 1.0.2 =
+* Updated 'tested up to' versions.
+* Fixed payment confirmation email
+
+= 1.0.1 =
+* Updated 'tested up to' versions.
 
 
 == Upgrade notice ==
