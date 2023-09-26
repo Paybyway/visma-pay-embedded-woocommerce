@@ -3,13 +3,13 @@
  * Plugin Name: Visma Pay Embedded Card Payment Gateway
  * Plugin URI: https://www.vismapay.com/docs
  * Description: Visma Pay Payment Gateway Embedded Card Integration for Woocommerce
- * Version: 1.0.5
+ * Version: 1.1.0
  * Author: Visma
  * Author URI: https://www.visma.fi/vismapay/
  * Text Domain: visma-pay-embedded-card-payment-gateway
  * Domain Path: /languages
  * WC requires at least: 3.0.0
- * WC tested up to: 8.0.2
+ * WC tested up to: 8.1.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -29,7 +29,23 @@ function woocommerce_add_WC_Gateway_visma_pay_embedded_card($methods)
 	$methods[] = 'WC_Gateway_visma_pay_embedded_card';
 	return $methods;
 }
+
 add_filter('woocommerce_payment_gateways', 'woocommerce_add_WC_Gateway_visma_pay_embedded_card');
+
+function woocommerce_register_WC_Gateway_Visma_Pay_Embedded__Card_Blocks_Support()
+{
+	if (class_exists('Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType')) {
+		require_once 'includes/blocks/visma_pay_embedded_card_blocks_support.php';
+		add_action(
+			'woocommerce_blocks_payment_method_type_registration',
+			function(Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry $paymentMethodRegistry) {
+				$paymentMethodRegistry->register(new WC_Gateway_Visma_Pay_Embedded_Card_Blocks_Support);
+			}
+		);
+	}
+}
+
+add_action('woocommerce_blocks_loaded', 'woocommerce_register_WC_Gateway_Visma_Pay_Embedded__Card_Blocks_Support');
 
 function init_visma_pay_embedded_card_gateway()
 {
@@ -40,6 +56,20 @@ function init_visma_pay_embedded_card_gateway()
 
 	class WC_Gateway_visma_pay_embedded_card extends WC_Payment_Gateway
 	{
+		protected $api_key;
+		protected $private_key;
+		protected $ordernumber_prefix;
+		protected $send_items;
+		protected $send_receipt;
+		protected $cancel_url;
+		protected $limit_currencies;
+		protected $visa_logo;
+		protected $mc_logo;
+		protected $amex_logo;
+		protected $diners_logo;
+		protected $logger;
+		protected $logcontext;
+		
 		public function __construct()
 		{
 			$this->id = 'visma_pay_embedded_card';
@@ -99,6 +129,16 @@ function init_visma_pay_embedded_card_gateway()
 
 			$this->logger = wc_get_logger();
 			$this->logcontext = array('source' => 'visma-pay-embedded-card-payment-gateway');
+		}
+
+		static function plugin_url()
+		{
+			return untrailingslashit(plugins_url( '/', __FILE__ ));
+		}
+	
+		static function plugin_abspath()
+		{
+			return trailingslashit(plugin_dir_path( __FILE__ ));
 		}
 
 		public function visma_pay_admin_notices() 
@@ -260,7 +300,7 @@ function init_visma_pay_embedded_card_gateway()
 			echo '</div>';
 		}
 
-		protected function get_lang()
+		public function get_lang()
 		{
 			$finn_langs = array('fi-FI', 'fi', 'fi_FI');
 			$sv_langs = array('sv-SE', 'sv', 'sv_SE');
@@ -346,6 +386,11 @@ function init_visma_pay_embedded_card_gateway()
 				)
 			);
 
+			$return = array(
+				'result' => 'success',
+				'redirect' => '', // expected but not used
+			);
+
 			if(!$this->is_valid_currency() && $this->limit_currencies == 'no')
 			{
 				$available = false;
@@ -371,7 +416,7 @@ function init_visma_pay_embedded_card_gateway()
 							wc_add_notice(__('Visma Pay: No payment methods available for the currency: ', 'visma-pay-embedded-card-payment-gateway') . get_woocommerce_currency(), 'error');
 							$order_number_text = __('Visma Pay: No payment methods available for the currency: ', 'visma-pay-embedded-card-payment-gateway') .  get_woocommerce_currency();
 							$order->add_order_note($order_number_text);
-							return;
+							return $return;
 						}
 					}
 				}
@@ -386,7 +431,7 @@ function init_visma_pay_embedded_card_gateway()
 				$this->logger->info($error_text . $order_number, $this->logcontext);
 				wc_add_notice(__('Visma Pay: No payment methods available for the currency: ', 'visma-pay-embedded-card-payment-gateway') . get_woocommerce_currency(), 'notice');
 				$order->add_order_note($error_text . $order_number);
-				return;
+				return $return;
 			}
 
 			try
@@ -410,7 +455,8 @@ function init_visma_pay_embedded_card_gateway()
 
 					$return = array(
 						'result'   => 'success',
-						'bpf_token' => $response->token
+						'bpf_token' => $response->token,
+						'redirect' => ''
 					);				
 				}
 				else if($response->result == 10)
@@ -418,7 +464,6 @@ function init_visma_pay_embedded_card_gateway()
 					$errors = '';
 					wc_add_notice(__('Visma Pay (Embedded Card) system is currently in maintenance. Please try again in a few minutes.', 'visma-pay-embedded-card-payment-gateway'), 'notice');
 					$this->logger->info('Visma Pay (Embedded Card)::CreateCharge. Visma Pay system maintenance in progress.', $this->logcontext);
-					$return = null;
 				}
 				else
 				{
@@ -432,7 +477,6 @@ function init_visma_pay_embedded_card_gateway()
 						}
 					}
 					$this->logger->error('Visma Pay (Embedded Card)::CreateCharge failed, response: ' . $response->result . ' - Errors: ' . $errors, $this->logcontext);
-					$return = null;
 				}
 
 			}
@@ -440,7 +484,6 @@ function init_visma_pay_embedded_card_gateway()
 			{
 				wc_add_notice(__('Payment failed due to an error.', 'visma-pay-embedded-card-payment-gateway'), 'error');
 				$this->logger->error('Visma Pay (Embedded Card)::CreateCharge failed, exception: ' . $e->getCode().' '.$e->getMessage(), $this->logcontext);
-				$return = null;
 			}
 
 			if(isset($_REQUEST['pay_for_order']) && $_REQUEST['pay_for_order'] == true)

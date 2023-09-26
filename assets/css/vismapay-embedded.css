@@ -1,4 +1,4 @@
-#payment #visma-pay-embedded-card-payment-content {
+#visma-pay-embedded-card-payment-content {
   position: relative;
   clear: both;
   overflow: auto;
@@ -6,7 +6,7 @@
   width: 100%;
 }
 
-#payment #visma-pay-embedded-card-payment-content:after {
+#visma-pay-embedded-card-payment-content:after {
   content: ' ';
   clear: both;
 }
@@ -15,18 +15,18 @@ ul.payment_methods li.payment_method_visma_pay_embedded_card p {
   clear: both;
 }
 
-#payment #visma-pay-embedded-card-payment-content .vpe-card-brand-row {
+#visma-pay-embedded-card-payment-content .vpe-card-brand-row {
   background-color: #fff;
   border: 2px solid #eee;
   border-radius: 2px;
   text-align: center;
 }
-#payment #visma-pay-embedded-card-payment-content .vpe-card-brand-row:after {
+#visma-pay-embedded-card-payment-content .vpe-card-brand-row:after {
   content: ' ';
   clear: both;
 }
 
-#payment #visma-pay-embedded-card-payment-content .vpe-card-brand-container {
+#visma-pay-embedded-card-payment-content .vpe-card-brand-container {
   max-width: 16.5%;
   width: 73px;
   height: 50px;
@@ -35,13 +35,13 @@ ul.payment_methods li.payment_method_visma_pay_embedded_card p {
   display: inline-block;
 }
 
-#payment #visma-pay-embedded-card-payment-content .vpe-card-brand-container img.vpe-card-brand-logo.visa{
+#visma-pay-embedded-card-payment-content .vpe-card-brand-container img.vpe-card-brand-logo.visa{
 	max-width: 100%;
 	max-height: 36px !important;
 	margin: 0 !important;
 }
 
-#payment #visma-pay-embedded-card-payment-content .vpe-card-brand-container img{
+#visma-pay-embedded-card-payment-content .vpe-card-brand-container img{
 	max-width: 100%;
 	max-height: 40px !important;
 	margin: 0 !important;
