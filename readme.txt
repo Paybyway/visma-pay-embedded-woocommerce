@@ -41,12 +41,18 @@ Card payments
 
 == Changelog ==
 
+= 1.1.2 =
+* Fixed issue with subscription payments being charged twice
+
+= 1.1.1 =
+* Added files that were missing from 1.1.0
+
 = 1.1.0 =
 * Support for Woocommerce Blocks
 * Updated 'tested up to' versions.
 
 = 1.0.5 =
-* Support for HSOP
+* Support for HPOS
 * Updated 'tested up to' versions.
 
 = 1.0.4 =

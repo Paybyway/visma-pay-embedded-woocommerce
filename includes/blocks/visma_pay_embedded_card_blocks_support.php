@@ -10,7 +10,9 @@ final class WC_Gateway_Visma_Pay_Embedded_Card_Blocks_Support extends AbstractPa
 	public function initialize()
 	{
 		$this->settings = get_option('woocommerce_visma_pay_embedded_card_settings', []);
-		$this->gateway = new WC_Gateway_visma_pay_embedded_card();
+		$payment_gateways_class = WC()->payment_gateways();
+		$payment_gateways = $payment_gateways_class->payment_gateways();
+		$this->gateway = $payment_gateways['visma_pay_embedded_card'];
 	}
 
 	public function is_active()

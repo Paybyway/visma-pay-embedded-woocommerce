@@ -3,7 +3,7 @@
  * Plugin Name: Visma Pay Embedded Card Payment Gateway
  * Plugin URI: https://www.vismapay.com/docs
  * Description: Visma Pay Payment Gateway Embedded Card Integration for Woocommerce
- * Version: 1.1.0
+ * Version: 1.1.2
  * Author: Visma
  * Author URI: https://www.visma.fi/vismapay/
  * Text Domain: visma-pay-embedded-card-payment-gateway
@@ -884,7 +884,7 @@ function init_visma_pay_embedded_card_gateway()
 			{
 				$result = $payment->chargeWithCardToken();
 
-				$order->update_meta_data('visma_pay_embedded_card_return_code', $result->resul);
+				$order->update_meta_data('visma_pay_embedded_card_return_code', $result->result);
 				$order->save();
 
 				switch ($result->result) {
