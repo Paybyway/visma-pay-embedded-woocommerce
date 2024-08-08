@@ -3,13 +3,13 @@
  * Plugin Name: Visma Pay Embedded Card Payment Gateway
  * Plugin URI: https://www.vismapay.com/docs
  * Description: Visma Pay Payment Gateway Embedded Card Integration for Woocommerce
- * Version: 1.1.3
+ * Version: 1.1.4
  * Author: Visma
  * Author URI: https://www.visma.fi/vismapay/
  * Text Domain: visma-pay-embedded-card-payment-gateway
  * Domain Path: /languages
  * WC requires at least: 3.0.0
- * WC tested up to: 8.3.0
+ * WC tested up to: 9.1.4
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -342,7 +342,7 @@ function init_visma_pay_embedded_card_gateway()
 
 			$lang = $this->get_lang();
 
-			$payment = new Visma\VismaPay($this->api_key, $this->private_key, 'w3.1', new Visma\VismaPayWPConnector());
+			$payment = new Visma\VismaPay($this->api_key, $this->private_key, 'w3.2', new Visma\VismaPayWPConnector());
 
 			if($this->send_receipt == 'yes')
 				$receipt_mail = $order->get_billing_email();
@@ -394,7 +394,7 @@ function init_visma_pay_embedded_card_gateway()
 			if(!$this->is_valid_currency() && $this->limit_currencies == 'no')
 			{
 				$available = false;
-				$payment_methods = new Visma\VismaPay($this->api_key, $this->private_key, 'w3.1', new Visma\VismaPayWPConnector());
+				$payment_methods = new Visma\VismaPay($this->api_key, $this->private_key, 'w3.2', new Visma\VismaPayWPConnector());
 				try
 				{
 					$response = $payment_methods->getMerchantPaymentMethods(get_woocommerce_currency());
@@ -564,7 +564,7 @@ function init_visma_pay_embedded_card_gateway()
 					{
 						$pbw_extra_info = '';
 
-						$payment = new Visma\VismaPay($this->api_key, $this->private_key, 'w3.1', new Visma\VismaPayWPConnector());
+						$payment = new Visma\VismaPay($this->api_key, $this->private_key, 'w3.2', new Visma\VismaPayWPConnector());
 						try
 						{
 							$result = $payment->checkStatusWithOrderNumber($order_number);
@@ -803,7 +803,7 @@ function init_visma_pay_embedded_card_gateway()
 		{
 			$successful = false;
 			require_once(plugin_dir_path( __FILE__ ).'includes/lib/visma_pay_loader.php');
-			$payment = new Visma\VismaPay($this->api_key, $this->private_key, 'w3.1', new Visma\VismaPayWPConnector());
+			$payment = new Visma\VismaPay($this->api_key, $this->private_key, 'w3.2', new Visma\VismaPayWPConnector());
 			try
 			{
 				$settlement = $payment->settlePayment($order_number);
@@ -850,7 +850,7 @@ function init_visma_pay_embedded_card_gateway()
 
 			$card_token = $subscription->get_meta('visma_pay_embedded_card_token', true, 'edit');
 
-			$payment = new Visma\VismaPay($this->api_key, $this->private_key, 'w3.1', new Visma\VismaPayWPConnector());
+			$payment = new Visma\VismaPay($this->api_key, $this->private_key, 'w3.2', new Visma\VismaPayWPConnector());
 
 			$order_number = (strlen($this->ordernumber_prefix)  > 0) ?  $this->ordernumber_prefix . '_' . $order->get_id() : $order->get_id();
 			$order_number .=  '-' . str_pad(time().rand(0,9999), 5, "1", STR_PAD_RIGHT);
@@ -968,7 +968,7 @@ function init_visma_pay_embedded_card_gateway()
 
 			$card_token = $subscription->get_meta($key, true, 'edit');
 
-			$payment = new Visma\VismaPay($this->api_key, $this->private_key, 'w3.1', new Visma\VismaPayWPConnector());
+			$payment = new Visma\VismaPay($this->api_key, $this->private_key, 'w3.2', new Visma\VismaPayWPConnector());
 
 			try
 			{
@@ -1003,11 +1003,13 @@ function init_visma_pay_embedded_card_gateway()
 				if(!empty($tax_rates))
 				{
 					$tax_rate = reset($tax_rates);
-					$line_tax = (int)round($tax_rate['rate']);
+					$line_tax = number_format($tax_rate['rate'], 2, '.', '');
 				}
 				else
 				{
-					$line_tax = ($order->get_item_total($item, false, false) > 0) ? round($order->get_item_tax($item, false)/$order->get_item_total($item, false, false)*100,0) : 0;
+					$i_total = $order->get_item_total($item, false, false);
+					$i_tax = $order->get_item_tax($item, false);
+					$line_tax = ($i_total > 0) ? number_format($i_tax / $i_total * 100, 2, '.', '') : 0;
 				}
 				
 				$product = array(
@@ -1081,6 +1083,7 @@ function init_visma_pay_embedded_card_gateway()
 			$wc_s_city = $order->get_shipping_city();
 			$wc_s_postcode = $order->get_shipping_postcode();
 			$wc_s_country = $order->get_shipping_country();
+			$wc_b_phone = $order->get_billing_phone();
 
 			$payment->addCustomer(
 				array(
@@ -1096,7 +1099,8 @@ function init_visma_pay_embedded_card_gateway()
 					'shipping_address_street' => trim(htmlspecialchars($wc_s_address_1.' '.$wc_s_address_2)),
 					'shipping_address_city' => htmlspecialchars($wc_s_city),
 					'shipping_address_zip' => htmlspecialchars($wc_s_postcode),
-					'shipping_address_country' => htmlspecialchars($wc_s_country)
+					'shipping_address_country' => htmlspecialchars($wc_s_country),
+					'phone' => preg_replace('/[^0-9+ ]/', '', $wc_b_phone)
 				)
 			);
 

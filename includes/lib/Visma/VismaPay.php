@@ -16,7 +16,7 @@ class VismaPay
 
 	const API_URL = 'https://www.vismapay.com/pbwapi';
 
-	public function __construct($api_key, $private_key, $version = 'w3.1', VismaPayConnector $connector = null)
+	public function __construct($api_key, $private_key, $version = 'w3.2', VismaPayConnector $connector = null)
 	{
 		$this->api_key = $api_key;
 		$this->private_key = $private_key;
@@ -70,7 +70,7 @@ class VismaPay
 		else
 			$payment_data['plugin_info'] .= '0';
 
-		$payment_data['plugin_info'] .= '|1.1.3';
+		$payment_data['plugin_info'] .= '|1.1.4';
 
 		return $this->makeRequest($url, $payment_data);
 	}
