@@ -1,4 +1,4 @@
-﻿=== Visma Pay (Embedded Card) for Woocommerce ===
+=== Visma Pay (Embedded Card) for Woocommerce ===
 Contributors: hsuvant
 Donate link: 
 Tags: payment gateway, visma, pay, verkkomaksut, korttimaksut, vismapay
@@ -40,6 +40,9 @@ Card payments
 
 
 == Changelog ==
+
+= 1.1.5 =
+* Fixed an issue with incorrect shipping tax rate being sent to Visma Pay API.
 
 = 1.1.4 =
 * Changed Visma Pay API version to w3.2 which supports decimals in tax percent
