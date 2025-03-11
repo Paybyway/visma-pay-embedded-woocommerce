@@ -3,13 +3,13 @@
  * Plugin Name: Visma Pay Embedded Card Payment Gateway
  * Plugin URI: https://www.vismapay.com/docs
  * Description: Visma Pay Payment Gateway Embedded Card Integration for Woocommerce
- * Version: 1.1.5
+ * Version: 1.1.6
  * Author: Visma
  * Author URI: https://www.visma.fi/vismapay/
  * Text Domain: visma-pay-embedded-card-payment-gateway
  * Domain Path: /languages
  * WC requires at least: 3.0.0
- * WC tested up to: 9.1.4
+ * WC tested up to: 9.7.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -56,10 +56,13 @@ function init_visma_pay_embedded_card_gateway()
 
 	class WC_Gateway_visma_pay_embedded_card extends WC_Payment_Gateway
 	{
+		const VP_FREE_TRIAL_AMOUNT = 100;
+
 		protected $api_key;
 		protected $private_key;
 		protected $ordernumber_prefix;
 		protected $send_items;
+		protected $allow_free_trial;
 		protected $send_receipt;
 		protected $cancel_url;
 		protected $limit_currencies;
@@ -103,6 +106,7 @@ function init_visma_pay_embedded_card_gateway()
 
 			$this->send_items = $this->get_option('send_items');
 			$this->send_receipt = $this->get_option('send_receipt');
+			$this->allow_free_trial = $this->get_option('allow_free_trial');
 
 			$this->cancel_url = $this->get_option('cancel_url');
 			$this->limit_currencies = $this->get_option('limit_currencies');
@@ -208,6 +212,13 @@ function init_visma_pay_embedded_card_gateway()
 					'label' => __( "Enable this option if you want to allow payments only in EUR.", 'visma-pay-embedded-card-payment-gateway' ),
 					'default' => 'yes',
 				),
+				'allow_free_trial' => array(
+					'title' => __( 'Allow free trial', 'visma-pay-embedded-card-payment-gateway' ),
+					'type' => 'checkbox',
+					'label' => __( 'Enable to allow using free trial on WC Subscription products', 'visma-pay-embedded-card-payment-gateway' ),
+					'description' => __( 'When this option is enabled, the plugin will create an authorization of 100 fractional monetary units. The currency depends on your store\'s settings. The authorization is required to save the payment card. After the order is completed, the authorization will be automatically canceled. For example, when using EUR, the authorization will be 1.00 EUR.', 'visma-pay-embedded-card-payment-gateway' ),
+					'default' => 'no'
+				),
 				'cancel_url' => array(
 					'title' => __( 'Cancel Page', 'visma-pay-embedded-card-payment-gateway' ),
 					'type' => 'select',
@@ -262,6 +273,7 @@ function init_visma_pay_embedded_card_gateway()
 		{
 			if(!(is_checkout() || $this->is_available()))
 				return;
+
 			wp_enqueue_style( 'woocommerce_visma_pay_embedded_card', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) . '/assets/css/vismapay-embedded.css', '', '', 'all');
 			wp_enqueue_script( 'woocommerce_visma_pay_embedded_card', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) . '/assets/js/vismapay-embedded.js', array( 'jquery' ), '', true );
 		}
@@ -271,7 +283,17 @@ function init_visma_pay_embedded_card_gateway()
 			$img_url = untrailingslashit(plugins_url(basename(plugin_dir_path(__FILE__)), basename(__FILE__))) . '/assets/images/';
 			$clear_both = '<div style="display: block; clear: both;"></div>';
 
-			echo '<div id="visma-pay-embedded-card-payment-content">'.wpautop(wptexturize(__( 'Payment card', 'visma-pay-embedded-card-payment-gateway' ))) . "<div id='pf-cc-form'><iframe frameBorder='0' scrolling='no' id='pf-cc-iframe' class='intrinsic-ignore' height='220px' style='width:100%' src='https://www.vismapay.com/e-payments/embedded_card_form?lang=".$this->get_lang()."'></iframe></div>" . $clear_both;
+			echo '<div id="visma-pay-embedded-card-payment-content">'.wpautop(wptexturize(esc_html__( 'Payment card', 'visma-pay-embedded-card-payment-gateway' )));
+
+			
+			if($this->visma_pay_cart_has_free_trial())
+			{
+				$currency = get_woocommerce_currency();
+
+				echo '<div class="woocommerce-info">' . sprintf(esc_html__('An authorization of 1 %s will be made on your card to save your card details. The authorization will be automatically cancelled after the order has been accepted.', 'visma-pay-embedded-card-payment-gateway'), $currency) . '</div>';
+			}
+				
+			echo "<div id='pf-cc-form'><iframe frameBorder='0' scrolling='no' id='pf-cc-iframe' class='intrinsic-ignore' height='220px' style='width:100%' src='https://www.vismapay.com/e-payments/embedded_card_form?lang=".$this->get_lang()."'></iframe></div>" . $clear_both;
 
 			if($this->visa_logo === 'yes' || $this->mc_logo === 'yes' || $this->amex_logo === 'yes' || $this->diners_logo === 'yes')
 			{
@@ -324,7 +346,6 @@ function init_visma_pay_embedded_card_gateway()
 			require_once(plugin_dir_path( __FILE__ ).'includes/lib/visma_pay_loader.php');
 
 			$order = new WC_Order($order_id);
-			$wc_order_id = $order->get_id();
 			$wc_order_total = $order->get_total();
 
 			$order_number = (strlen($this->ordernumber_prefix)  > 0) ?  $this->ordernumber_prefix. '_'  .$order_id : $order_id;
@@ -334,10 +355,14 @@ function init_visma_pay_embedded_card_gateway()
 
 			$return_url = add_query_arg( array('wc-api' => get_class( $this ) ,'order_id' => $order_id), $redirect_url );
 
-			$amount =  (int)(round($wc_order_total*100, 0));
+			$amount = (int)(round($wc_order_total*100, 0));
+			$override_auto_settlement = 0;
+			$register_card_token = 0;
 
 			$order->update_meta_data('visma_pay_embedded_card_is_settled', 99);
 			$order->update_meta_data('visma_pay_embedded_card_return_code', 99);
+			$order->update_meta_data('visma_pay_embedded_card_return_code', 99);
+			$order->update_meta_data('_visma_pay_embedded_card_only_save_token', 0);
 			$order->save();
 
 			$lang = $this->get_lang();
@@ -348,6 +373,22 @@ function init_visma_pay_embedded_card_gateway()
 				$receipt_mail = $order->get_billing_email();
 			else
 				$receipt_mail = '';
+
+			if($this->visma_pay_order_related_to_subscription($order)) 
+			{
+				$register_card_token =  1;
+
+				if($this->visma_pay_only_authorize($order))
+				{
+					$order->add_order_note(__('Visma Pay (Embedded Card): Creating a temporary authorization to save card token.', 'visma-pay-embedded-card-payment-gateway'));
+					$order->update_meta_data('_visma_pay_embedded_card_only_save_token', 1);
+					$order->save();
+
+					$override_auto_settlement = 1;
+					$amount = self::VP_FREE_TRIAL_AMOUNT;
+					$receipt_mail = '';
+				}
+			}
 
 			$payment->addCharge(
 				array(
@@ -365,16 +406,6 @@ function init_visma_pay_embedded_card_gateway()
 				$payment = $this->add_products_to_payment($payment, $order, $amount);
 			}
 
-			$register_card_token = 0;
-
-			if(function_exists('wcs_order_contains_subscription')) 
-			{
-				if(wcs_order_contains_subscription($order) || wcs_order_contains_renewal($order) || wcs_is_subscription($order))
-				{
-            		$register_card_token =  1;
-				}
-        	}
-
 			$payment->addPaymentMethod(
 				array(
 					'type' => 'embedded', 
@@ -382,7 +413,8 @@ function init_visma_pay_embedded_card_gateway()
 					'notify_url' => $return_url,
 					'lang' => $lang,
 					'token_valid_until' => strtotime('+1 hour'),
-					'register_card_token' => $register_card_token
+					'register_card_token' => $register_card_token,
+					'override_auto_settlement' => $override_auto_settlement,
 				)
 			);
 
@@ -553,7 +585,6 @@ function init_visma_pay_embedded_card_gateway()
 				if($order === null)
 					$this->visma_pay_embedded_die("Order not found.");
 
-				$wc_order_id = $order->get_id();
 				$wc_order_status = $order->get_status();
 
 				if($authcode_confirm === $authcode && $order)
@@ -601,7 +632,9 @@ function init_visma_pay_embedded_card_gateway()
 						switch($return_code)
 						{
 							case 0:
-								if($settled == 0)
+								$should_cancel = $order->get_meta('_visma_pay_embedded_card_only_save_token', true, 'edit');
+
+								if($settled == 0 && $should_cancel == 0)
 									$pbw_note = __('Visma Pay (Embedded Card) order', 'visma-pay-embedded-card-payment-gateway') . ' ' . $order_number . "<br>-<br>" . __('Payment is authorized. Use settle option to capture funds.', 'visma-pay-embedded-card-payment-gateway') . "<br>";
 								else
 									$pbw_note = __('Visma Pay (Embedded Card) order', 'visma-pay-embedded-card-payment-gateway') . ' ' . $order_number . "<br>-<br>" . __('Payment accepted.', 'visma-pay-embedded-card-payment-gateway') . "<br>";
@@ -632,6 +665,36 @@ function init_visma_pay_embedded_card_gateway()
 											$subscription->update_meta_data('visma_pay_embedded_card_token', $result->source->card_token);
 											$subscription->add_order_note($pbw_note . $pbw_extra_info);
 											$subscription->save();
+										}
+
+										$wc_order_total = $order->get_total();
+										$amount = (int)(round($wc_order_total*100, 0));
+
+										if($should_cancel == 1 && $amount === 0)
+										{
+											$cancel_result = $payment->cancelPayment($order_number);
+
+											if($cancel_result->result == 0)
+											{
+												$order->add_order_note(__(
+													'Visma Pay (Embedded Card): Succesfully cancelled temporary authorization.',
+													'visma-pay-embedded-card-payment-gateway'
+												));
+											}
+											else
+											{
+												$order->add_order_note(__(
+													'Visma Pay (Embedded Card): Failed to cancel temporary authorization. You should cancel the authorization using Visma Pay merchant portal.',
+													'visma-pay-embedded-card-payment-gateway'
+												));
+												
+												$this->logger->error(
+													'Visma Pay Embedded - Failed to cancel temporary authorization. You should cancel the authorization using Visma Pay merchant portal. Order: ' . $order->id,
+													 $this->logcontext
+												);
+											}
+
+											$order->update_meta_data('visma_pay_embedded_card_is_settled', 1);
 										}
 									}
 								}
@@ -991,6 +1054,13 @@ function init_visma_pay_embedded_card_gateway()
 
 		protected function add_products_to_payment($payment, $order, $amount)
 		{
+			$only_tokenize = $order->get_meta('_visma_pay_embedded_card_only_save_token', true, 'edit');
+
+			if($only_tokenize == 1)
+			{
+				return $this->visma_pay_add_dummy_product_to_payment($payment);
+			}
+
 			$products = array();
 			$total_amount = 0;
 			$order_items = $order->get_items();
@@ -1136,6 +1206,96 @@ function init_visma_pay_embedded_card_gateway()
 			}
 
 			return $actions;
+		}
+
+		protected function visma_pay_order_has_free_trial($order)
+		{
+			$subscriptions = wcs_get_subscriptions_for_order($order);
+
+			foreach ($subscriptions as $subscription)
+			{
+
+				$trial_length = wcs_estimate_periods_between(
+					$subscription->get_time('start'),
+					$subscription->get_time('trial_end'),
+					$subscription->get_trial_period()
+				);
+
+				if ($trial_length > 0)
+					return true;
+			}
+
+			return false;
+		}
+
+		protected function visma_pay_only_authorize($order)
+		{
+			$wc_order_total = $order->get_total();
+			$amount = (int)(round($wc_order_total*100, 0));
+
+			$has_free_trial = $this->visma_pay_order_has_free_trial($order);
+
+			if($this->allow_free_trial == 'yes' && $amount === 0 && $has_free_trial)
+			{
+				return true;
+			}
+
+			return false;
+		}
+
+		protected function visma_pay_add_dummy_product_to_payment($payment)
+		{
+			$payment->addProduct(
+				array(
+					'id' => '1',
+					'title' => 'register_card_token',
+					'count' => 1,
+					'pretax_price' => self::VP_FREE_TRIAL_AMOUNT,
+					'tax' => 0,
+					'price' => self::VP_FREE_TRIAL_AMOUNT,
+					'type' => 1,
+				)
+			);
+
+			return $payment;
+		}
+
+		protected function visma_pay_order_related_to_subscription($order)
+		{
+			if (!function_exists('wcs_order_contains_subscription'))
+				return false;
+		
+			$contains_subs = wcs_order_contains_subscription($order);
+			$contains_renew = wcs_order_contains_renewal($order);
+			$is_subs = wcs_is_subscription($order);
+		
+			if ($contains_subs || $contains_renew || $is_subs)
+				return true;
+
+			return false;
+		}
+
+		// Called from WC_Gateway_Visma_Pay_Blocks_Support
+		function visma_pay_cart_has_free_trial()
+		{
+			$cart = WC()->cart;
+
+			if (!$cart || $this->allow_free_trial != 'yes' || !class_exists('WC_Subscriptions_Product'))
+				return false;
+
+			$wc_cart_total = WC()->cart->total;
+			$cart_total = (int)(round($wc_cart_total*100, 0));
+			
+			foreach ($cart->get_cart() as $cart_item)
+			{
+				$product_id = $cart_item['product_id'];
+				$trial_length = WC_Subscriptions_Product::get_trial_length($product_id);
+
+				if ($trial_length > 0 && $cart_total === 0)
+					return true;
+			}
+
+			return false;
 		}
 	}
 }

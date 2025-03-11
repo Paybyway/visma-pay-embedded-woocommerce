@@ -59,6 +59,7 @@ final class WC_Gateway_Visma_Pay_Embedded_Card_Blocks_Support extends AbstractPa
 		$mastercard = false;
 		$amex = false;
 		$diners = false;
+		$only_authorize = false;
 
 		// blocks will also be rendered in the editor
 		if (is_checkout()) {
@@ -68,6 +69,7 @@ final class WC_Gateway_Visma_Pay_Embedded_Card_Blocks_Support extends AbstractPa
 			$mastercard = $this->get_setting('mc_logo') === 'yes';
 			$amex = $this->get_setting('amex_logo') === 'yes';
 			$diners = $this->get_setting('diners_logo') === 'yes';
+			$only_authorize = $this->gateway->visma_pay_cart_has_free_trial();
 		}
 
 		return [
@@ -78,7 +80,9 @@ final class WC_Gateway_Visma_Pay_Embedded_Card_Blocks_Support extends AbstractPa
 			'mastercard' => $mastercard,
 			'amex' => $amex,
 			'diners' => $diners,
-			'supports' => array_filter($this->gateway->supports, [$this->gateway, 'supports'])
+			'supports' => array_filter($this->gateway->supports, [$this->gateway, 'supports']),
+			'onlyAuthorize' => $only_authorize,
+			'currency' => get_woocommerce_currency(),
 		];
 	}
 }

@@ -1,394 +1,428 @@
-# Copyright (C) 2023 Visma
+# Copyright (C) 2025 Visma
 # This file is distributed under the same license as the Visma Pay Embedded Card Payment Gateway plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Visma Pay Embedded Card Payment Gateway 1.1.2\n"
+"Project-Id-Version: Visma Pay Embedded Card Payment Gateway 1.1.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/visma-pay-embedded-card-payment-gateway\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-10-03T13:10:45+00:00\n"
+"POT-Creation-Date: 2025-03-06T10:35:29+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.8.1\n"
+"X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: visma-pay-embedded-card-payment-gateway\n"
 
 #. Plugin Name of the plugin
+#: visma-pay-embedded-card-payment-gateway.php
 msgid "Visma Pay Embedded Card Payment Gateway"
 msgstr ""
 
 #. Plugin URI of the plugin
+#: visma-pay-embedded-card-payment-gateway.php
 msgid "https://www.vismapay.com/docs"
 msgstr ""
 
 #. Description of the plugin
+#: visma-pay-embedded-card-payment-gateway.php
 msgid "Visma Pay Payment Gateway Embedded Card Integration for Woocommerce"
 msgstr ""
 
 #. Author of the plugin
+#: visma-pay-embedded-card-payment-gateway.php
 msgid "Visma"
 msgstr ""
 
 #. Author URI of the plugin
+#: visma-pay-embedded-card-payment-gateway.php
 msgid "https://www.visma.fi/vismapay/"
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:77
-#: visma-pay-embedded-card-payment-gateway.php:173
+#: visma-pay-embedded-card-payment-gateway.php:80
+#: visma-pay-embedded-card-payment-gateway.php:177
 msgid "Visma Pay (Embedded Card)"
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:78
+#: visma-pay-embedded-card-payment-gateway.php:81
 msgid "Visma Pay (Embedded Card) w3-API Payment Gateway integration for Woocommerce"
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:159
+#: visma-pay-embedded-card-payment-gateway.php:163
 msgid "General options"
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:164
+#: visma-pay-embedded-card-payment-gateway.php:168
 msgid "Enable/Disable"
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:166
+#: visma-pay-embedded-card-payment-gateway.php:170
 msgid "Enable Visma Pay (Embedded Card)"
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:170
+#: visma-pay-embedded-card-payment-gateway.php:174
 msgid "Title"
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:172
+#: visma-pay-embedded-card-payment-gateway.php:176
 msgid "This controls the title which the user sees during checkout."
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:176
+#: visma-pay-embedded-card-payment-gateway.php:180
 msgid "Private key"
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:178
+#: visma-pay-embedded-card-payment-gateway.php:182
 msgid "Private key of the sub-merchant"
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:182
+#: visma-pay-embedded-card-payment-gateway.php:186
 msgid "API key"
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:184
+#: visma-pay-embedded-card-payment-gateway.php:188
 msgid "API key of the sub-merchant"
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:188
+#: visma-pay-embedded-card-payment-gateway.php:192
 msgid "Order number prefix"
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:190
+#: visma-pay-embedded-card-payment-gateway.php:194
 msgid "Prefix to avoid order number duplication"
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:194
+#: visma-pay-embedded-card-payment-gateway.php:198
 msgid "Send products"
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:196
+#: visma-pay-embedded-card-payment-gateway.php:200
 msgid "Send product breakdown to Visma Pay (Embedded Card)."
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:200
+#: visma-pay-embedded-card-payment-gateway.php:204
 msgid "Send payment confirmation"
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:202
+#: visma-pay-embedded-card-payment-gateway.php:206
 msgid "Send Visma Pay (Embedded Card)'s payment confirmation email to the customer's billing e-mail."
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:206
+#: visma-pay-embedded-card-payment-gateway.php:210
 msgid "Only allow payments in EUR"
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:208
+#: visma-pay-embedded-card-payment-gateway.php:212
 msgid "Enable this option if you want to allow payments only in EUR."
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:212
-msgid "Cancel Page"
-msgstr ""
-
-#: visma-pay-embedded-card-payment-gateway.php:215
-msgid "Choose the page where the customer is redirected after a canceled/failed payment."
-msgstr ""
-
 #: visma-pay-embedded-card-payment-gateway.php:216
-msgid "Order Received: Shows the customer information about their order and a notice that the payment failed. Customer has an opportunity to try payment again."
-msgstr ""
-
-#: visma-pay-embedded-card-payment-gateway.php:217
-msgid "Pay for Order: Returns user to a page where they can try to pay their unpaid order again. "
+msgid "Allow free trial"
 msgstr ""
 
 #: visma-pay-embedded-card-payment-gateway.php:218
-msgid "Cart: Customer is redirected back to the shopping cart."
+msgid "Enable to allow using free trial on WC Subscription products"
 msgstr ""
 
 #: visma-pay-embedded-card-payment-gateway.php:219
-msgid "Checkout: Customer is redirected back to the checkout."
-msgstr ""
-
-#: visma-pay-embedded-card-payment-gateway.php:220
-msgid "(When using Cart or Checkout as the return page for failed orders, the customer's cart will not be emptied during checkout.)"
+msgid "When this option is enabled, the plugin will create an authorization of 100 fractional monetary units. The currency depends on your store's settings. The authorization is required to save the payment card. After the order is completed, the authorization will be automatically canceled. For example, when using EUR, the authorization will be 1.00 EUR."
 msgstr ""
 
 #: visma-pay-embedded-card-payment-gateway.php:223
-msgid "Order Received"
-msgstr ""
-
-#: visma-pay-embedded-card-payment-gateway.php:224
-msgid "Pay for Order"
-msgstr ""
-
-#: visma-pay-embedded-card-payment-gateway.php:225
-msgid "Cart"
+msgid "Cancel Page"
 msgstr ""
 
 #: visma-pay-embedded-card-payment-gateway.php:226
-msgid "Checkout"
+msgid "Choose the page where the customer is redirected after a canceled/failed payment."
+msgstr ""
+
+#: visma-pay-embedded-card-payment-gateway.php:227
+msgid "Order Received: Shows the customer information about their order and a notice that the payment failed. Customer has an opportunity to try payment again."
+msgstr ""
+
+#: visma-pay-embedded-card-payment-gateway.php:228
+msgid "Pay for Order: Returns user to a page where they can try to pay their unpaid order again. "
+msgstr ""
+
+#: visma-pay-embedded-card-payment-gateway.php:229
+msgid "Cart: Customer is redirected back to the shopping cart."
 msgstr ""
 
 #: visma-pay-embedded-card-payment-gateway.php:230
-msgid "Display card logos"
+msgid "Checkout: Customer is redirected back to the checkout."
+msgstr ""
+
+#: visma-pay-embedded-card-payment-gateway.php:231
+msgid "(When using Cart or Checkout as the return page for failed orders, the customer's cart will not be emptied during checkout.)"
+msgstr ""
+
+#: visma-pay-embedded-card-payment-gateway.php:234
+msgid "Order Received"
 msgstr ""
 
 #: visma-pay-embedded-card-payment-gateway.php:235
-msgid "Visa"
+msgid "Pay for Order"
+msgstr ""
+
+#: visma-pay-embedded-card-payment-gateway.php:236
+msgid "Cart"
 msgstr ""
 
 #: visma-pay-embedded-card-payment-gateway.php:237
-msgid "Display Visa and Verified by Visa logo below the form."
+msgid "Checkout"
 msgstr ""
 
 #: visma-pay-embedded-card-payment-gateway.php:241
+msgid "Display card logos"
+msgstr ""
+
+#: visma-pay-embedded-card-payment-gateway.php:246
+msgid "Visa"
+msgstr ""
+
+#: visma-pay-embedded-card-payment-gateway.php:248
+msgid "Display Visa and Verified by Visa logo below the form."
+msgstr ""
+
+#: visma-pay-embedded-card-payment-gateway.php:252
 msgid "Mastercard"
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:243
+#: visma-pay-embedded-card-payment-gateway.php:254
 msgid "Display Mastercard and Mastercard SecureCode logo below the form."
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:247
+#: visma-pay-embedded-card-payment-gateway.php:258
 msgid "American Express"
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:249
+#: visma-pay-embedded-card-payment-gateway.php:260
 msgid "Display American Express logo below the form."
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:253
+#: visma-pay-embedded-card-payment-gateway.php:264
 msgid "Diners Club"
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:255
+#: visma-pay-embedded-card-payment-gateway.php:266
 msgid "Display Diners Club logo below the form."
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:274
+#: visma-pay-embedded-card-payment-gateway.php:286
 #: build/blocks.js:1
 msgid "Payment card"
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:416
-#: visma-pay-embedded-card-payment-gateway.php:417
-#: visma-pay-embedded-card-payment-gateway.php:432
+#: visma-pay-embedded-card-payment-gateway.php:293
+#: build/blocks.js:1
+msgid "An authorization of 1 %s will be made on your card to save your card details. The authorization will be automatically cancelled after the order has been accepted."
+msgstr ""
+
+#: visma-pay-embedded-card-payment-gateway.php:383
+msgid "Visma Pay (Embedded Card): Creating a temporary authorization to save card token."
+msgstr ""
+
+#: visma-pay-embedded-card-payment-gateway.php:448
+#: visma-pay-embedded-card-payment-gateway.php:449
+#: visma-pay-embedded-card-payment-gateway.php:464
 msgid "Visma Pay: No payment methods available for the currency: "
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:430
+#: visma-pay-embedded-card-payment-gateway.php:462
 msgid "Visma Pay: \"Only allow payments in EUR\" is enabled and currency was not EUR for order: "
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:443
-#: visma-pay-embedded-card-payment-gateway.php:605
-#: visma-pay-embedded-card-payment-gateway.php:607
+#: visma-pay-embedded-card-payment-gateway.php:475
+#: visma-pay-embedded-card-payment-gateway.php:638
+#: visma-pay-embedded-card-payment-gateway.php:640
 msgid "Visma Pay (Embedded Card) order"
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:443
+#: visma-pay-embedded-card-payment-gateway.php:475
 msgid "Payment pending. Waiting for result."
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:465
+#: visma-pay-embedded-card-payment-gateway.php:497
 msgid "Visma Pay (Embedded Card) system is currently in maintenance. Please try again in a few minutes."
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:471
-#: visma-pay-embedded-card-payment-gateway.php:485
+#: visma-pay-embedded-card-payment-gateway.php:503
+#: visma-pay-embedded-card-payment-gateway.php:517
 msgid "Payment failed due to an error."
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:573
+#: visma-pay-embedded-card-payment-gateway.php:604
 msgid "Payment method: Card payment"
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:574
+#: visma-pay-embedded-card-payment-gateway.php:605
 msgid "Card payment info: "
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:579
+#: visma-pay-embedded-card-payment-gateway.php:610
 msgid "Verified: "
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:582
+#: visma-pay-embedded-card-payment-gateway.php:613
 msgid "Card country: "
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:583
+#: visma-pay-embedded-card-payment-gateway.php:614
 msgid "Client IP country: "
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:588
+#: visma-pay-embedded-card-payment-gateway.php:619
 msgid "Error: "
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:593
+#: visma-pay-embedded-card-payment-gateway.php:624
 msgid "Payment method: "
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:605
-#: visma-pay-embedded-card-payment-gateway.php:894
+#: visma-pay-embedded-card-payment-gateway.php:638
+#: visma-pay-embedded-card-payment-gateway.php:957
 msgid "Payment is authorized. Use settle option to capture funds."
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:607
-#: visma-pay-embedded-card-payment-gateway.php:898
+#: visma-pay-embedded-card-payment-gateway.php:640
+#: visma-pay-embedded-card-payment-gateway.php:961
 msgid "Payment accepted."
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:618
+#: visma-pay-embedded-card-payment-gateway.php:651
 msgid "Card token: "
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:619
+#: visma-pay-embedded-card-payment-gateway.php:652
 msgid "Expiration: "
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:645
+#: visma-pay-embedded-card-payment-gateway.php:679
+msgid "Visma Pay (Embedded Card): Succesfully cancelled temporary authorization."
+msgstr ""
+
+#: visma-pay-embedded-card-payment-gateway.php:686
+msgid "Visma Pay (Embedded Card): Failed to cancel temporary authorization. You should cancel the authorization using Visma Pay merchant portal."
+msgstr ""
+
+#: visma-pay-embedded-card-payment-gateway.php:708
 msgid "Payment was not accepted."
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:653
+#: visma-pay-embedded-card-payment-gateway.php:716
 msgid "Transaction status could not be updated after customer returned from the web page of a bank. Please use the merchant UI to resolve the payment status."
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:661
+#: visma-pay-embedded-card-payment-gateway.php:724
 msgid "Maintenance break. The transaction is not created and the user has been notified and transferred back to the cancel address."
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:691
+#: visma-pay-embedded-card-payment-gateway.php:754
 msgid "Card payment failed. Your card has not been charged."
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:693
+#: visma-pay-embedded-card-payment-gateway.php:756
 msgid "Payment was canceled or charge was not accepted."
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:722
+#: visma-pay-embedded-card-payment-gateway.php:785
 msgid "The card is reported lost or stolen."
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:724
+#: visma-pay-embedded-card-payment-gateway.php:787
 msgid "General decline. The card holder should contact the issuer to find out why the payment failed."
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:726
+#: visma-pay-embedded-card-payment-gateway.php:789
 msgid "Insufficient funds. The card holder should verify that there is balance on the account and the online payments are actived."
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:728
+#: visma-pay-embedded-card-payment-gateway.php:791
 msgid "Expired card."
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:730
+#: visma-pay-embedded-card-payment-gateway.php:793
 msgid "Withdrawal amount limit exceeded."
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:732
+#: visma-pay-embedded-card-payment-gateway.php:795
 msgid "Restricted card. The card holder should verify that the online payments are actived."
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:734
+#: visma-pay-embedded-card-payment-gateway.php:797
 msgid "Timeout communicating with the acquirer. The payment should be tried again later."
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:745
+#: visma-pay-embedded-card-payment-gateway.php:808
 msgid "3-D Secure was used."
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:747
+#: visma-pay-embedded-card-payment-gateway.php:810
 msgid "3-D Secure was not used."
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:749
+#: visma-pay-embedded-card-payment-gateway.php:812
 msgid "3-D Secure was attempted but not supported by the card issuer or the card holder is not participating."
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:774
+#: visma-pay-embedded-card-payment-gateway.php:837
 msgid "Payment settled."
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:792
+#: visma-pay-embedded-card-payment-gateway.php:855
 msgid "Settle payment"
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:816
+#: visma-pay-embedded-card-payment-gateway.php:879
 msgid "Settlement was successful."
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:819
+#: visma-pay-embedded-card-payment-gateway.php:882
 msgid "Settlement failed. Validation failed."
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:822
+#: visma-pay-embedded-card-payment-gateway.php:885
 msgid "Settlement failed. Either the payment has already been settled or the payment gateway refused to settle payment for given transaction."
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:825
+#: visma-pay-embedded-card-payment-gateway.php:888
 msgid "Settlement failed. Unknown error."
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:832
+#: visma-pay-embedded-card-payment-gateway.php:895
 msgid "Exception, error: "
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:894
-#: visma-pay-embedded-card-payment-gateway.php:898
+#: visma-pay-embedded-card-payment-gateway.php:957
+#: visma-pay-embedded-card-payment-gateway.php:961
 msgid "Visma Pay (Embedded Card, Subscription) order"
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:907
+#: visma-pay-embedded-card-payment-gateway.php:970
 msgid "Duplicate order number."
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:911
+#: visma-pay-embedded-card-payment-gateway.php:974
 msgid "Card token not found."
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:936
+#: visma-pay-embedded-card-payment-gateway.php:999
 msgid "Payment failed. The card was not charged. Error: "
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:936
+#: visma-pay-embedded-card-payment-gateway.php:999
 msgid "Payment failed. The card was not charged."
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:945
+#: visma-pay-embedded-card-payment-gateway.php:1008
 msgid "Payment failed. Exception: "
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:983
+#: visma-pay-embedded-card-payment-gateway.php:1046
 msgid "Failed to delete the card token %s. Return code: %s"
 msgstr ""
 
-#: visma-pay-embedded-card-payment-gateway.php:988
+#: visma-pay-embedded-card-payment-gateway.php:1051
 msgid "Failed to delete the card token %s. Exception: %s"
 msgstr ""
 
