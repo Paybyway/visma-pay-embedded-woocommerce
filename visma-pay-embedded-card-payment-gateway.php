@@ -3,13 +3,13 @@
  * Plugin Name: Visma Pay Embedded Card Payment Gateway
  * Plugin URI: https://www.vismapay.com/docs
  * Description: Visma Pay Payment Gateway Embedded Card Integration for Woocommerce
- * Version: 1.1.6
+ * Version: 1.2.0
  * Author: Visma
  * Author URI: https://www.visma.fi/vismapay/
  * Text Domain: visma-pay-embedded-card-payment-gateway
  * Domain Path: /languages
  * WC requires at least: 3.0.0
- * WC tested up to: 9.7.1
+ * WC tested up to: 9.8.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -88,7 +88,6 @@ function init_visma_pay_embedded_card_gateway()
 				'subscription_reactivation',
 				'subscription_amount_changes',
 				'subscription_date_changes',
-				'subscription_payment_method_change',
 				'subscription_payment_method_change_customer',
 				'multiple_subscriptions' 
 			);
@@ -121,12 +120,9 @@ function init_visma_pay_embedded_card_gateway()
 			add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options' ) );
 			add_action('woocommerce_api_wc_gateway_visma_pay_embedded_card', array($this, 'check_visma_pay_embedded_card_response' ) );
 			add_action('woocommerce_admin_order_data_after_billing_address', array($this, 'visma_pay_embedded_card_settle_payment'), 1, 1);
-
-			add_action('woocommerce_scheduled_subscription_payment_' . $this->id, array($this, 'scheduled_subscription_payment'), 10, 2);
+			add_action('woocommerce_subscription_failing_payment_method_updated_' . $this->id, array($this, 'visma_pay_update_failing_payment'), 10, 2);
 			add_action('woocommerce_subscription_cancelled_' . $this->id, array($this, 'subscription_cancellation'));
-
-			// registering a new card token with 0 amount is not supported at the moment so don't allow this option
-			add_filter('wcs_view_subscription_actions', array (__CLASS__, 'remove_change_payment_method_button'), 100, 2);
+			add_action('woocommerce_scheduled_subscription_payment_' . $this->id, array($this, 'scheduled_subscription_payment'), 10, 2);
 
 			if(!$this->is_valid_currency() && $this->limit_currencies == 'yes')
 				$this->enabled = false;
@@ -213,9 +209,9 @@ function init_visma_pay_embedded_card_gateway()
 					'default' => 'yes',
 				),
 				'allow_free_trial' => array(
-					'title' => __( 'Allow free trial', 'visma-pay-embedded-card-payment-gateway' ),
+					'title' => __( 'Allow free trial and payment method changes', 'visma-pay-embedded-card-payment-gateway' ),
 					'type' => 'checkbox',
-					'label' => __( 'Enable to allow using free trial on WC Subscription products', 'visma-pay-embedded-card-payment-gateway' ),
+					'label' => __( 'Enable to allow using free trial and on WC Subscription products and to allow changing payment method of a subscription.', 'visma-pay-embedded-card-payment-gateway' ),
 					'description' => __( 'When this option is enabled, the plugin will create an authorization of 100 fractional monetary units. The currency depends on your store\'s settings. The authorization is required to save the payment card. After the order is completed, the authorization will be automatically canceled. For example, when using EUR, the authorization will be 1.00 EUR.', 'visma-pay-embedded-card-payment-gateway' ),
 					'default' => 'no'
 				),
@@ -285,7 +281,6 @@ function init_visma_pay_embedded_card_gateway()
 
 			echo '<div id="visma-pay-embedded-card-payment-content">'.wpautop(wptexturize(esc_html__( 'Payment card', 'visma-pay-embedded-card-payment-gateway' )));
 
-			
 			if($this->visma_pay_cart_has_free_trial())
 			{
 				$currency = get_woocommerce_currency();
@@ -345,7 +340,7 @@ function init_visma_pay_embedded_card_gateway()
 
 			require_once(plugin_dir_path( __FILE__ ).'includes/lib/visma_pay_loader.php');
 
-			$order = new WC_Order($order_id);
+			$order = wc_get_order($order_id);
 			$wc_order_total = $order->get_total();
 
 			$order_number = (strlen($this->ordernumber_prefix)  > 0) ?  $this->ordernumber_prefix. '_'  .$order_id : $order_id;
@@ -367,7 +362,7 @@ function init_visma_pay_embedded_card_gateway()
 
 			$lang = $this->get_lang();
 
-			$payment = new Visma\VismaPay($this->api_key, $this->private_key, 'w3.2', new Visma\VismaPayWPConnector());
+			$payment = new VismaPay\VismaPay($this->api_key, $this->private_key, 'w3.2', new VismaPay\VismaPayWPConnector());
 
 			if($this->send_receipt == 'yes')
 				$receipt_mail = $order->get_billing_email();
@@ -395,7 +390,8 @@ function init_visma_pay_embedded_card_gateway()
 					'order_number' => $order_number,
 					'amount' => $amount,
 					'currency' => get_woocommerce_currency(),
-					'email' =>  $receipt_mail
+					'email' =>  $receipt_mail,
+					'plugin_info' => $this->visma_pay_plugin_info(),
 				)
 			);
 
@@ -426,7 +422,7 @@ function init_visma_pay_embedded_card_gateway()
 			if(!$this->is_valid_currency() && $this->limit_currencies == 'no')
 			{
 				$available = false;
-				$payment_methods = new Visma\VismaPay($this->api_key, $this->private_key, 'w3.2', new Visma\VismaPayWPConnector());
+				$payment_methods = new VismaPay\VismaPay($this->api_key, $this->private_key, 'w3.2', new VismaPay\VismaPayWPConnector());
 				try
 				{
 					$response = $payment_methods->getMerchantPaymentMethods(get_woocommerce_currency());
@@ -452,7 +448,7 @@ function init_visma_pay_embedded_card_gateway()
 						}
 					}
 				}
-				catch (Visma\VismaPayException $e) 
+				catch (VismaPay\VismaPayException $e) 
 				{
 					$this->logger->error('Visma Pay getMerchantPaymentMethods failed for order: ' . $order_number . ', exception: ' . $e->getCode().' '.$e->getMessage(), $this->logcontext);
 				}
@@ -512,7 +508,7 @@ function init_visma_pay_embedded_card_gateway()
 				}
 
 			}
-			catch (Visma\VismaPayException $e) 
+			catch (VismaPay\VismaPayException $e) 
 			{
 				wc_add_notice(__('Payment failed due to an error.', 'visma-pay-embedded-card-payment-gateway'), 'error');
 				$this->logger->error('Visma Pay (Embedded Card)::CreateCharge failed, exception: ' . $e->getCode().' '.$e->getMessage(), $this->logcontext);
@@ -529,7 +525,7 @@ function init_visma_pay_embedded_card_gateway()
 
 		protected function get_order_by_id_and_order_number($order_id, $order_number)
 		{
-			$order = New WC_Order($order_id);
+			$order = wc_get_order($order_id);
 
 			$order_numbers = $order->get_meta('visma_pay_embedded_card_order_numbers', true, 'edit');
 
@@ -595,38 +591,38 @@ function init_visma_pay_embedded_card_gateway()
 					{
 						$pbw_extra_info = '';
 
-						$payment = new Visma\VismaPay($this->api_key, $this->private_key, 'w3.2', new Visma\VismaPayWPConnector());
+						$payment = new VismaPay\VismaPay($this->api_key, $this->private_key, 'w3.2', new VismaPay\VismaPayWPConnector());
 						try
 						{
-							$result = $payment->checkStatusWithOrderNumber($order_number);
-							if(isset($result->source->object) && $result->source->object === 'card')
+							$result = $payment->getPayment($order_number);
+							if(isset($result->payment->source->object) && $result->payment->source->object === 'card')
 							{
 								$pbw_extra_info .=  "<br>-<br>" . __('Payment method: Card payment', 'visma-pay-embedded-card-payment-gateway') . "<br>";
 								$pbw_extra_info .=  "<br>-<br>" . __('Card payment info: ', 'visma-pay-embedded-card-payment-gateway') . "<br>";
 
-								if(isset($result->source->card_verified))
+								if(isset($result->payment->source->card_verified))
 								{
-									$pbw_verified = $this->visma_pay_embedded_card_translate_verified_code($result->source->card_verified);
+									$pbw_verified = $this->visma_pay_embedded_card_translate_verified_code($result->payment->source->card_verified);
 									$pbw_extra_info .= isset($pbw_verified) ? __('Verified: ', 'visma-pay-embedded-card-payment-gateway') . $pbw_verified . "<br>" : '';
 								}
 
-								$pbw_extra_info .= isset($result->source->card_country) ? __('Card country: ', 'visma-pay-embedded-card-payment-gateway') . $result->source->card_country . "<br>" : '';
-								$pbw_extra_info .= isset($result->source->client_ip_country) ? __('Client IP country: ', 'visma-pay-embedded-card-payment-gateway') . $result->source->client_ip_country . "<br>" : '';
+								$pbw_extra_info .= isset($result->payment->source->card_country) ? __('Card country: ', 'visma-pay-embedded-card-payment-gateway') . $result->payment->source->card_country . "<br>" : '';
+								$pbw_extra_info .= isset($result->payment->source->client_ip_country) ? __('Client IP country: ', 'visma-pay-embedded-card-payment-gateway') . $result->payment->source->client_ip_country . "<br>" : '';
 
-								if(isset($result->source->error_code))
+								if(isset($result->payment->source->error_code))
 								{
-									$pbw_error = $this->visma_pay_embedded_card_translate_error_code($result->source->error_code);
+									$pbw_error = $this->visma_pay_embedded_card_translate_error_code($result->payment->source->error_code);
 									$pbw_extra_info .= isset($pbw_error) ? __('Error: ', 'visma-pay-embedded-card-payment-gateway') . $pbw_error . "<br>" : '';
 								}
 
 							}
-							elseif (isset($result->source->brand))
-								$pbw_extra_info .=  "<br>-<br>" . __('Payment method: ', 'visma-pay-embedded-card-payment-gateway') . ' ' . $result->source->brand . "<br>";
+							elseif (isset($result->payment->source->brand))
+								$pbw_extra_info .=  "<br>-<br>" . __('Payment method: ', 'visma-pay-embedded-card-payment-gateway') . ' ' . $result->payment->source->brand . "<br>";
 						}
-						catch(Visma\VismaPayException $e)
+						catch(VismaPay\VismaPayException $e)
 						{
 							$message = $e->getMessage();
-							$this->logger->error('Visma Pay (Embedded Card) REST::checkStatusWithOrderNumber failed, message: ' . $message, $this->logcontext);
+							$this->logger->error('Visma Pay (Embedded Card) REST::getPayment failed, message: ' . $message, $this->logcontext);
 						}
 
 						switch($return_code)
@@ -644,58 +640,70 @@ function init_visma_pay_embedded_card_gateway()
 								$order->update_meta_data('visma_pay_embedded_card_is_settled', $is_settled);
 								$order->save();
 
-								if(isset($result->source->card_token))
+								if(isset($result->payment->source->card_token) && function_exists('wcs_get_subscriptions_for_order'))
 								{
-									$order->update_meta_data('visma_pay_embedded_card_token', $result->source->card_token);
+									$pbw_extra_info .= __('Card token: ', 'visma-pay-embedded-card-payment-gateway') . ' ' . $result->payment->source->card_token . "<br>";
+									$pbw_extra_info .= __('Expiration: ', 'visma-pay-embedded-card-payment-gateway') . ' ' . $result->payment->source->exp_month . '/' . $result->payment->source->exp_year;
+									$order->update_meta_data('visma_pay_embedded_card_token', $result->payment->source->card_token);
 
-									$pbw_extra_info .= __('Card token: ', 'visma-pay-embedded-card-payment-gateway') . ' ' . $result->source->card_token . "<br>";
-									$pbw_extra_info .= __('Expiration: ', 'visma-pay-embedded-card-payment-gateway') . ' ' . $result->source->exp_month . '/' . $result->source->exp_year;
+									$order_types = array(
+										'parent', 'resubscribe', 'switch',
+									);
 
-									if(function_exists('wcs_get_subscriptions_for_order')) 
+									if(wcs_order_contains_early_renewal($order))
 									{
-										$subscriptions = wcs_get_subscriptions_for_order($order_id, array( 'order_type' => 'any'));
+										$this->logger->error('Visma Pay: Early renewal with new details order-id: ' . $order->get_id(), $this->logcontext);
+										$order_types[] = 'renewal';
+									}
 
-										foreach ($subscriptions as $subscription)
+									$subscriptions = wcs_get_subscriptions_for_order($order_id, 
+										array(
+											'order_type' => $order_types,
+										)
+									);
+
+									foreach ($subscriptions as $subscription)
+									{
+										$card_token = $subscription->get_meta('visma_pay_embedded_card_token', true, 'edit');
+
+										if(!empty($card_token))
 										{
-											$card_token = $subscription->get_meta('visma_pay_embedded_card_token', true, 'edit');
+											$this->logger->error('Visma Pay: Overwriting card token on subscription: ' . $subscription->get_id(), $this->logcontext);
 
-											if(!empty($card_token))
-												$subscription->update_meta_data('visma_pay_embedded_card_token_old', $card_token);
-
-											$subscription->update_meta_data('visma_pay_embedded_card_token', $result->source->card_token);
-											$subscription->add_order_note($pbw_note . $pbw_extra_info);
-											$subscription->save();
+											if(wcs_order_contains_early_renewal($order))
+												$this->subscription_cancellation($subscription);
 										}
 
-										$wc_order_total = $order->get_total();
-										$amount = (int)(round($wc_order_total*100, 0));
+										$subscription->update_meta_data('visma_pay_embedded_card_token', $result->payment->source->card_token);
+										$subscription->add_order_note($pbw_note . $pbw_extra_info);
+										$subscription->save();
+									}
 
-										if($should_cancel == 1 && $amount === 0)
+									if($should_cancel == 1 && $result->payment->amount === self::VP_FREE_TRIAL_AMOUNT)
+									{
+										$cancel_result = $payment->cancelPayment($order_number);
+
+										if($cancel_result->result == 0)
 										{
-											$cancel_result = $payment->cancelPayment($order_number);
-
-											if($cancel_result->result == 0)
-											{
-												$order->add_order_note(__(
-													'Visma Pay (Embedded Card): Succesfully cancelled temporary authorization.',
-													'visma-pay-embedded-card-payment-gateway'
-												));
-											}
-											else
-											{
-												$order->add_order_note(__(
-													'Visma Pay (Embedded Card): Failed to cancel temporary authorization. You should cancel the authorization using Visma Pay merchant portal.',
-													'visma-pay-embedded-card-payment-gateway'
-												));
-												
-												$this->logger->error(
-													'Visma Pay Embedded - Failed to cancel temporary authorization. You should cancel the authorization using Visma Pay merchant portal. Order: ' . $order->id,
-													 $this->logcontext
-												);
-											}
-
-											$order->update_meta_data('visma_pay_embedded_card_is_settled', 1);
+											$order->add_order_note(__(
+												'Visma Pay (Embedded Card): Succesfully cancelled temporary authorization.',
+												'visma-pay-embedded-card-payment-gateway'
+											));
 										}
+										else
+										{
+											$order->add_order_note(__(
+												'Visma Pay (Embedded Card): Failed to cancel temporary authorization. You should cancel the authorization using Visma Pay merchant portal.',
+												'visma-pay-embedded-card-payment-gateway'
+											));
+
+											$this->logger->error(
+												'Visma Pay Embedded - Failed to cancel temporary authorization. You should cancel the authorization using Visma Pay merchant portal. Order: ' . $order->get_id(),
+													$this->logcontext
+											);
+										}
+
+										$order->update_meta_data('visma_pay_embedded_card_is_settled', 1);
 									}
 								}
 
@@ -737,7 +745,7 @@ function init_visma_pay_embedded_card_gateway()
 					$this->visma_pay_embedded_die("MAC check failed");
 
 				$cancel_url_option = $this->get_option('cancel_url', '');
-				$card = (isset($result->source->object) && $result->source->object === 'card') ? true : false;
+				$card = (isset($result->payment->source->object) && $result->payment->source->object === 'card') ? true : false;
 				$redirect_url = $this->visma_pay_embedded_card_url($return_code, $order, $cancel_url_option, $card);
 				wp_redirect($redirect_url);
 				exit('Ok');
@@ -866,7 +874,7 @@ function init_visma_pay_embedded_card_gateway()
 		{
 			$successful = false;
 			require_once(plugin_dir_path( __FILE__ ).'includes/lib/visma_pay_loader.php');
-			$payment = new Visma\VismaPay($this->api_key, $this->private_key, 'w3.2', new Visma\VismaPayWPConnector());
+			$payment = new VismaPay\VismaPay($this->api_key, $this->private_key, 'w3.2', new VismaPay\VismaPayWPConnector());
 			try
 			{
 				$settlement = $payment->settlePayment($order_number);
@@ -889,7 +897,7 @@ function init_visma_pay_embedded_card_gateway()
 						break;
 				}
 			}
-			catch (Visma\VismaPayException $e) 
+			catch (VismaPay\VismaPayException $e) 
 			{
 				$message = $e->getMessage();
 				$settlement_msg = __('Exception, error: ', 'visma-pay-embedded-card-payment-gateway') . $message;
@@ -913,7 +921,7 @@ function init_visma_pay_embedded_card_gateway()
 
 			$card_token = $subscription->get_meta('visma_pay_embedded_card_token', true, 'edit');
 
-			$payment = new Visma\VismaPay($this->api_key, $this->private_key, 'w3.2', new Visma\VismaPayWPConnector());
+			$payment = new VismaPay\VismaPay($this->api_key, $this->private_key, 'w3.2', new VismaPay\VismaPayWPConnector());
 
 			$order_number = (strlen($this->ordernumber_prefix)  > 0) ?  $this->ordernumber_prefix . '_' . $order->get_id() : $order->get_id();
 			$order_number .=  '-' . str_pad(time().rand(0,9999), 5, "1", STR_PAD_RIGHT);
@@ -926,7 +934,8 @@ function init_visma_pay_embedded_card_gateway()
 					'amount' => $amount,
 					'currency' => get_woocommerce_currency(),
 					'card_token' => $card_token,
-					'email' => $this->send_receipt === 'yes' ? $order->get_billing_email() : ''
+					'email' => $this->send_receipt === 'yes' ? $order->get_billing_email() : '',
+					'plugin_info' => $this->visma_pay_plugin_info(),
 				)
 			);
 
@@ -991,9 +1000,9 @@ function init_visma_pay_embedded_card_gateway()
 
 
 						$pbw_error = '';
-						if(isset($result->source->error_code))
+						if(isset($result->payment->source->error_code))
 						{
-							$pbw_error = $this->visma_pay_embedded_card_translate_error_code($result->source->error_code);
+							$pbw_error = $this->visma_pay_embedded_card_translate_error_code($result->payment->source->error_code);
 						}
 						
 						$note = !empty($pbw_error) ? __('Payment failed. The card was not charged. Error: ', 'visma-pay-embedded-card-payment-gateway') . $pbw_error : __('Payment failed. The card was not charged.', 'visma-pay-embedded-card-payment-gateway');
@@ -1003,7 +1012,7 @@ function init_visma_pay_embedded_card_gateway()
 				}
 
 			}
-			catch(Visma\VismaPayException $e)
+			catch(VismaPay\VismaPayException $e)
 			{
 				$note = __('Payment failed. Exception: ', 'visma-pay-embedded-card-payment-gateway') . $e->getMessage();
 				$order->update_status('failed', $note);
@@ -1017,38 +1026,55 @@ function init_visma_pay_embedded_card_gateway()
 
 		public function subscription_cancellation($subscription)
 		{
+			$this->logger->info('Visma Pay subscription_cancellation triggered for subscription: ' . $subscription->get_id(), $this->logcontext);
+
 			require_once(plugin_dir_path( __FILE__ ).'includes/lib/visma_pay_loader.php');
-			if($subscription->get_status() === 'cancelled')
+
+			$card_token = $subscription->get_meta('visma_pay_embedded_card_token', true, 'edit');
+
+			if(!empty($card_token))
 			{
-				$key = 'visma_pay_embedded_card_token';
-				$success_note = 'The card token %s was successfully deleted';
-			}
-			else
-			{
-				$key = 'visma_pay_embedded_card_token_old';
-				$success_note = 'The old card token %s was successfully deleted';
-			}
+				$parent_id = $subscription->order->get_id();
+				$parent_order = wc_get_order($parent_id);
+				$other_subscriptions = wcs_get_subscriptions_for_order($parent_order);
+				$token_usage_count = 0;
 
-			$card_token = $subscription->get_meta($key, true, 'edit');
-
-			$payment = new Visma\VismaPay($this->api_key, $this->private_key, 'w3.2', new Visma\VismaPayWPConnector());
-
-			try
-			{
-				$result = $payment->deleteCardToken($card_token);
-
-				if($result->result == 0)
+				foreach ($other_subscriptions as $other_sub)
 				{
-					$subscription->add_order_note(sprintf(__($success_note, 'visma-pay-embedded-card-payment-gateway'), $card_token));
+					$other_card_token = $other_sub->get_meta('visma_pay_embedded_card_token', true, 'edit');
+
+					if($other_card_token == $card_token)
+						$token_usage_count++;
 				}
-				else
+
+				if($token_usage_count > 1)
 				{
-					$subscription->add_order_note(sprintf(__('Failed to delete the card token %s. Return code: %s', 'visma-pay-embedded-card-payment-gateway'), $card_token, $result->result));
+					$this->logger->info('Visma Pay card token of subscription: ' . $subscription->get_id() . ' still used in other subscriptions. Not deleting.', $this->logcontext);	
+					$subscription->update_meta_data('visma_pay_embedded_card_token', '');
+					return;
 				}
-			}
-			catch(Visma\VismaPayException $e)
-			{
-				$subscription->add_order_note(sprintf(__('Failed to delete the card token %s. Exception: %s', 'visma-pay-embedded-card-payment-gateway'), $card_token, $e->getMessage()));
+
+				$this->logger->info('Visma Pay deleting card token of subscription: ' . $subscription->get_id(), $this->logcontext);
+				$payment = new VismaPay\VismaPay($this->api_key, $this->private_key, 'w3.2', new VismaPay\VismaPayWPConnector());
+
+				try
+				{
+					$result = $payment->deleteCardToken($card_token);
+
+					if($result->result == 0)
+					{
+						$subscription->add_order_note(sprintf(__('The card token %s was successfully deleted', 'visma-pay-embedded-card-payment-gateway'), $card_token));
+						$subscription->update_meta_data('visma_pay_embedded_card_token', '');
+					}
+					else
+					{
+						$subscription->add_order_note(sprintf(__('Failed to delete the card token %s. Return code: %s', 'visma-pay-embedded-card-payment-gateway'), $card_token, $result->result));
+					}
+				}
+				catch(VismaPay\VismaPayException $e)
+				{
+					$subscription->add_order_note(sprintf(__('Failed to delete the card token %s. Exception: %s', 'visma-pay-embedded-card-payment-gateway'), $card_token, $e->getMessage()));
+				}
 			}
 		}
 
@@ -1188,33 +1214,12 @@ function init_visma_pay_embedded_card_gateway()
 			return $payment;
 		}
 
-		public static function remove_change_payment_method_button($actions, $subscription)
-		{
-			$card_token = $subscription->get_meta('visma_pay_embedded_card_token', true, 'edit');
-
-			if(!empty($card_token))
-			{
-				foreach ($actions as $action_key => $action)
-				{
-					switch ($action_key) 
-					{
-						case 'change_payment_method':
-							unset($actions[ $action_key ]);
-							break;
-					}
-				}
-			}
-
-			return $actions;
-		}
-
 		protected function visma_pay_order_has_free_trial($order)
 		{
 			$subscriptions = wcs_get_subscriptions_for_order($order);
 
 			foreach ($subscriptions as $subscription)
 			{
-
 				$trial_length = wcs_estimate_periods_between(
 					$subscription->get_time('start'),
 					$subscription->get_time('trial_end'),
@@ -1234,11 +1239,10 @@ function init_visma_pay_embedded_card_gateway()
 			$amount = (int)(round($wc_order_total*100, 0));
 
 			$has_free_trial = $this->visma_pay_order_has_free_trial($order);
+			$payment_method_changes = wcs_is_subscription($order);
 
-			if($this->allow_free_trial == 'yes' && $amount === 0 && $has_free_trial)
-			{
+			if($this->allow_free_trial == 'yes' && $amount === 0 && ($has_free_trial || $payment_method_changes))
 				return true;
-			}
 
 			return false;
 		}
@@ -1275,18 +1279,30 @@ function init_visma_pay_embedded_card_gateway()
 			return false;
 		}
 
+		protected function visma_pay_plugin_info()
+		{
+			$plugin_info = 'Woocommerce|';
+
+			if(defined('WOOCOMMERCE_VERSION'))
+				$plugin_info .= WOOCOMMERCE_VERSION;
+			else
+				$plugin_info .= '0';
+	
+			$plugin_info .= '|1.2.0';
+
+			return $plugin_info;
+		}
+
 		// Called from WC_Gateway_Visma_Pay_Blocks_Support
 		function visma_pay_cart_has_free_trial()
 		{
-			$cart = WC()->cart;
-
-			if (!$cart || $this->allow_free_trial != 'yes' || !class_exists('WC_Subscriptions_Product'))
+			if ($this->allow_free_trial != 'yes' || !class_exists('WC_Subscriptions_Product'))
 				return false;
 
 			$wc_cart_total = WC()->cart->total;
 			$cart_total = (int)(round($wc_cart_total*100, 0));
 			
-			foreach ($cart->get_cart() as $cart_item)
+			foreach (WC()->cart->get_cart() as $cart_item)
 			{
 				$product_id = $cart_item['product_id'];
 				$trial_length = WC_Subscriptions_Product::get_trial_length($product_id);
@@ -1295,7 +1311,22 @@ function init_visma_pay_embedded_card_gateway()
 					return true;
 			}
 
+			if(WC_Subscriptions_Change_Payment_Gateway::$is_request_to_change_payment)
+				return true;
+
 			return false;
+		}
+
+		public function visma_pay_update_failing_payment($subscription, $renewal_order)
+		{
+			$this->logger->info(
+				'Visma Pay updating new token from renewal ' . $renewal_order->get_id() . ' order to subscription: ' . $subscription->get_id(),
+				$this->logcontext
+			);
+
+			$new_token = $renewal_order->get_meta('visma_pay_embedded_card_token', true, 'edit');
+			$subscription->update_meta_data('visma_pay_embedded_card_token', $new_token);
+			$subscription->save();
 		}
 	}
 }

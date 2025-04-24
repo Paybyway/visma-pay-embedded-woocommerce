@@ -7,6 +7,6 @@
 	Exception code 5: Not enough return values given - invalid return
 */
 
-namespace Visma;
+namespace VismaPay;
 
 class VismaPayException extends \Exception {}

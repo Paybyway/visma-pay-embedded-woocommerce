@@ -1,6 +1,6 @@
 <?php
 
-namespace Visma;
+namespace VismaPay;
 
 interface VismaPayConnector
 {

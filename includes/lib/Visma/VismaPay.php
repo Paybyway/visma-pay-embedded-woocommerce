@@ -1,6 +1,6 @@
 <?php
 
-namespace Visma;
+namespace VismaPay;
 
 class VismaPay
 {
@@ -10,19 +10,22 @@ class VismaPay
 	protected $version;
 	protected $customer = array();
 	protected $products = array();
+	protected $refund_products = array();
 	protected $payment_method = array();
 	protected $charge = array();
+	protected $refund = array();
 	protected $initiator = array();
 
 	const API_URL = 'https://www.vismapay.com/pbwapi';
 
-	public function __construct($api_key, $private_key, $version = 'w3.2', VismaPayConnector $connector = null)
+	public function __construct($api_key, $private_key, $version = 'w3.2', $connector = null)
 	{
 		$this->api_key = $api_key;
 		$this->private_key = $private_key;
-		$this->connector = $connector ? $connector : new VismaPayWPConnector();
+		$this->connector = $connector ? $connector : new VismaPayCurl();
 		$this->version = $version;
 		$this->charge = null;
+		$this->refund = null;
 	}
 
 	protected function makeRequest($url, $params)
@@ -63,16 +66,20 @@ class VismaPay
 		if(!empty($this->initiator))
 			$payment_data['initiator'] = $this->initiator;
 
-		$payment_data['plugin_info'] = 'Woocommerce|';
-
-		if(defined('WOOCOMMERCE_VERSION'))
-			$payment_data['plugin_info'] .= WOOCOMMERCE_VERSION;
-		else
-			$payment_data['plugin_info'] .= '0';
-
-		$payment_data['plugin_info'] .= '|1.1.6';
-
 		return $this->makeRequest($url, $payment_data);
+	}
+
+	protected function makeRefundRequest($url)
+	{
+		$authcode_string = $this->api_key . '|' . $this->refund['order_number'];
+
+		$refund_data = $this->refund;
+		$refund_data['authcode'] = $this->calcAuthcode($authcode_string);
+
+		if(!empty($this->refund_products))
+			$refund_data['products'] = $this->refund_products;
+
+		return $this->makeRequest($url, $refund_data);
 	}
 
 	protected function calcAuthcode($input)
@@ -100,6 +107,11 @@ class VismaPay
 		$this->payment_method = $fields;
 	}
 
+	public function addInitiator(array $fields)
+	{
+		$this->initiator = $fields;
+	}
+
 	public function createCharge()
 	{
 		return $this->makeChargeRequest('auth_payment');
@@ -108,11 +120,6 @@ class VismaPay
 	public function chargeWithCardToken()
 	{
 		return $this->makeChargeRequest('charge_card_token');
-	}
-
-	public function addInitiator(array $fields)
-	{
-		$this->initiator = $fields;
 	}
 
 	public function checkStatusWithToken($token)
@@ -196,5 +203,44 @@ class VismaPay
 		}
 
 		throw new VismaPayException("VismaPay::checkReturn - unable to calculate MAC, not enough data given", 5);
+	}
+
+	public function getPayment($order_number)
+	{
+		return $this->makeRequest('get_payment', array(
+			'order_number' => $order_number,
+			'authcode' => $this->calcAuthcode($this->api_key . '|' . $order_number)
+		));
+	}
+
+	public function getRefund($refund_id)
+	{
+		return $this->makeRequest('get_refund', array(
+			'refund_id' => $refund_id,
+			'authcode' => $this->calcAuthcode($this->api_key . '|' . $refund_id)
+		));
+	}
+
+	public function addRefund(array $fields)
+	{
+		$this->refund = $fields;
+	}
+
+	public function addRefundProduct(array $fields)
+	{
+		array_push($this->refund_products, $fields);
+	}
+
+	public function createRefund()
+	{
+		return $this->makeRefundRequest('create_refund');
+	}
+
+	public function cancelRefund($refund_id)
+	{
+		return $this->makeRequest('cancel_refund', array(
+			'refund_id' => $refund_id,
+			'authcode' => $this->calcAuthcode($this->api_key . '|' . $refund_id)
+		));
 	}
 }

@@ -3,12 +3,12 @@ Contributors: hsuvant
 Donate link: 
 Tags: payment gateway, visma, pay, verkkomaksut, korttimaksut, vismapay
 Requires at least: 3.3
-Tested up to: 6.7.2
+Tested up to: 6.8
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 WC requires at least: 3.0.0
-WC tested up to: 9.7.1
+WC tested up to: 9.8.1
 
 Visma Pay plugin for Woocommerce.
 
@@ -40,6 +40,11 @@ Card payments
 
 
 == Changelog ==
+
+= 1.2.0 =
+* Updated 'tested up to' versions.
+* Fixed an issue that caused an immediate payment when customer updated a manual renewal subscription to automatic renewal
+* Added support for changing payment method of a subscription
 
 = 1.1.6 =
 * Added support for free trial on subscription products

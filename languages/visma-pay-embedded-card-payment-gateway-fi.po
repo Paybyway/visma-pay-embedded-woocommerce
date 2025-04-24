@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: Visma Pay Embedded Card Payment Gateway\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/visma-pay-"
 "embedded-card-payment-gateway\n"
-"POT-Creation-Date: 2025-03-06T10:35:29+00:00\n"
-"PO-Revision-Date: 2025-03-06 12:46+0200\n"
+"POT-Creation-Date: 2025-04-16T09:07:06+00:00\n"
+"PO-Revision-Date: 2025-04-16 12:11+0300\n"
 "Last-Translator: Visma Pay <helpdesk@vismapay.com>\n"
 "Language-Team: Suomi\n"
 "Language: fi\n"
@@ -43,7 +43,7 @@ msgid "https://www.visma.fi/vismapay/"
 msgstr "https://www.visma.fi/vismapay/"
 
 #: visma-pay-embedded-card-payment-gateway.php:80
-#: visma-pay-embedded-card-payment-gateway.php:177
+#: visma-pay-embedded-card-payment-gateway.php:173
 msgid "Visma Pay (Embedded Card)"
 msgstr "Visma Pay (Upotettu korttimaksaminen)"
 
@@ -54,65 +54,65 @@ msgstr ""
 "Visma Pay (Upotettu korttimaksaminen) maksurajapinnan integraatio "
 "Woocommerceen"
 
-#: visma-pay-embedded-card-payment-gateway.php:163
+#: visma-pay-embedded-card-payment-gateway.php:159
 msgid "General options"
 msgstr "Yleiset asetukset"
 
-#: visma-pay-embedded-card-payment-gateway.php:168
+#: visma-pay-embedded-card-payment-gateway.php:164
 msgid "Enable/Disable"
 msgstr "Ota käyttöön / Poista käytöstä"
 
-#: visma-pay-embedded-card-payment-gateway.php:170
+#: visma-pay-embedded-card-payment-gateway.php:166
 msgid "Enable Visma Pay (Embedded Card)"
 msgstr "Ota Visma Pay (Upotettu korttimaksaminen) käyttöön"
 
-#: visma-pay-embedded-card-payment-gateway.php:174
+#: visma-pay-embedded-card-payment-gateway.php:170
 msgid "Title"
 msgstr "Otsikko"
 
-#: visma-pay-embedded-card-payment-gateway.php:176
+#: visma-pay-embedded-card-payment-gateway.php:172
 msgid "This controls the title which the user sees during checkout."
 msgstr "Maksutavan kassasivulla näkyvä otsikko."
 
-#: visma-pay-embedded-card-payment-gateway.php:180
+#: visma-pay-embedded-card-payment-gateway.php:176
 msgid "Private key"
 msgstr "Yksityinen salausavain"
 
-#: visma-pay-embedded-card-payment-gateway.php:182
+#: visma-pay-embedded-card-payment-gateway.php:178
 msgid "Private key of the sub-merchant"
 msgstr "Alikauppiaan yksityinen salausavain"
 
-#: visma-pay-embedded-card-payment-gateway.php:186
+#: visma-pay-embedded-card-payment-gateway.php:182
 msgid "API key"
 msgstr "Rajapinta-avain"
 
-#: visma-pay-embedded-card-payment-gateway.php:188
+#: visma-pay-embedded-card-payment-gateway.php:184
 msgid "API key of the sub-merchant"
 msgstr "Alikauppiaan yksityinen rajapinta-avain"
 
-#: visma-pay-embedded-card-payment-gateway.php:192
+#: visma-pay-embedded-card-payment-gateway.php:188
 msgid "Order number prefix"
 msgstr "Tilausnumeron etuliite"
 
-#: visma-pay-embedded-card-payment-gateway.php:194
+#: visma-pay-embedded-card-payment-gateway.php:190
 msgid "Prefix to avoid order number duplication"
 msgstr ""
 "Etuliitteellä vältetään samanlaisten tilaustunnusten luonti, jos "
 "kauppiastunnus on käytössä useassa verkkokaupassa. (Valinnainen)"
 
-#: visma-pay-embedded-card-payment-gateway.php:198
+#: visma-pay-embedded-card-payment-gateway.php:194
 msgid "Send products"
 msgstr "Lähetä tuote-erittely"
 
-#: visma-pay-embedded-card-payment-gateway.php:200
+#: visma-pay-embedded-card-payment-gateway.php:196
 msgid "Send product breakdown to Visma Pay (Embedded Card)."
 msgstr "Lähetä tuote-erittely Visma Payn maksurajapintaan."
 
-#: visma-pay-embedded-card-payment-gateway.php:204
+#: visma-pay-embedded-card-payment-gateway.php:200
 msgid "Send payment confirmation"
 msgstr "Maksuvahvistus"
 
-#: visma-pay-embedded-card-payment-gateway.php:206
+#: visma-pay-embedded-card-payment-gateway.php:202
 msgid ""
 "Send Visma Pay (Embedded Card)'s payment confirmation email to the "
 "customer's billing e-mail."
@@ -120,25 +120,27 @@ msgstr ""
 "Visma Pay lähettää asiakkaalle maksuvahvistuksen onnistuneesta "
 "maksutapahtumasta."
 
-#: visma-pay-embedded-card-payment-gateway.php:210
+#: visma-pay-embedded-card-payment-gateway.php:206
 msgid "Only allow payments in EUR"
 msgstr "Salli maksaminen vain euroilla"
 
-#: visma-pay-embedded-card-payment-gateway.php:212
+#: visma-pay-embedded-card-payment-gateway.php:208
 msgid "Enable this option if you want to allow payments only in EUR."
 msgstr "Ota asetus käyttöön jos haluat sallia maksaminen ainoastaan euroilla."
 
-#: visma-pay-embedded-card-payment-gateway.php:216
-msgid "Allow free trial"
-msgstr "Salli ilmainen kokeilu"
+#: visma-pay-embedded-card-payment-gateway.php:212
+msgid "Allow free trial and payment method changes"
+msgstr "Salli ilmainen kokeilu ja maksutavan muuttaminen"
 
-#: visma-pay-embedded-card-payment-gateway.php:218
-msgid "Enable to allow using free trial on WC Subscription products"
+#: visma-pay-embedded-card-payment-gateway.php:214
+msgid ""
+"Enable to allow using free trial and on WC Subscription products and to "
+"allow changing payment method of a subscription."
 msgstr ""
-"Ota asetus käyttöön jos haluat sallia ilmaisen kokeilun kestotilauksissa (WC "
-"Subscriptions)"
+"Ota asetus käyttöön jos haluat sallia ilmaisen kokeilun ja maksutavan "
+"vaihtamisen kestotilauksissa (WC Subscriptions)"
 
-#: visma-pay-embedded-card-payment-gateway.php:219
+#: visma-pay-embedded-card-payment-gateway.php:215
 msgid ""
 "When this option is enabled, the plugin will create an authorization of 100 "
 "fractional monetary units. The currency depends on your store's settings. "
@@ -152,11 +154,11 @@ msgstr ""
 "automaattisesti. Esimerkiksi käytettäessä euroa (EUR) katevarauksen summa on "
 "1,00 EUR."
 
-#: visma-pay-embedded-card-payment-gateway.php:223
+#: visma-pay-embedded-card-payment-gateway.php:219
 msgid "Cancel Page"
 msgstr "Peruutetun maksun paluusivu"
 
-#: visma-pay-embedded-card-payment-gateway.php:226
+#: visma-pay-embedded-card-payment-gateway.php:222
 msgid ""
 "Choose the page where the customer is redirected after a canceled/failed "
 "payment."
@@ -164,7 +166,7 @@ msgstr ""
 "Valitse sivu jolle asiakas ohjataan epäonnistuneen tai keskeytyneen maksun "
 "jälkeen."
 
-#: visma-pay-embedded-card-payment-gateway.php:227
+#: visma-pay-embedded-card-payment-gateway.php:223
 msgid ""
 "Order Received: Shows the customer information about their order and a "
 "notice that the payment failed. Customer has an opportunity to try payment "
@@ -174,7 +176,7 @@ msgstr ""
 "ilmoituksen maksun epäonnistumisesta. Asiakas voi normaalisti yrittää "
 "maksamista uudelleen."
 
-#: visma-pay-embedded-card-payment-gateway.php:228
+#: visma-pay-embedded-card-payment-gateway.php:224
 msgid ""
 "Pay for Order: Returns user to a page where they can try to pay their unpaid "
 "order again. "
@@ -182,15 +184,15 @@ msgstr ""
 "Maksa Tilaus: Siirtää asiakkaan sivulle jossa hän voi yrittää uudelleen "
 "maksamattoman tilauksensa maksamista. "
 
-#: visma-pay-embedded-card-payment-gateway.php:229
+#: visma-pay-embedded-card-payment-gateway.php:225
 msgid "Cart: Customer is redirected back to the shopping cart."
 msgstr "Ostoskori: Asiakas siirretään takaisin ostoskori-sivulle."
 
-#: visma-pay-embedded-card-payment-gateway.php:230
+#: visma-pay-embedded-card-payment-gateway.php:226
 msgid "Checkout: Customer is redirected back to the checkout."
 msgstr "Kassa: Asiakas siirretään takaisin verkkokaupan kassalle."
 
-#: visma-pay-embedded-card-payment-gateway.php:231
+#: visma-pay-embedded-card-payment-gateway.php:227
 msgid ""
 "(When using Cart or Checkout as the return page for failed orders, the "
 "customer's cart will not be emptied during checkout.)"
@@ -199,64 +201,64 @@ msgstr ""
 "sivua, niin asiakkaan ostoskoria ei tyhjennetä maksamaan siirtymisen "
 "yhteydessä )"
 
-#: visma-pay-embedded-card-payment-gateway.php:234
+#: visma-pay-embedded-card-payment-gateway.php:230
 msgid "Order Received"
 msgstr "Tilaus vastaanotettu"
 
-#: visma-pay-embedded-card-payment-gateway.php:235
+#: visma-pay-embedded-card-payment-gateway.php:231
 msgid "Pay for Order"
 msgstr "Maksa Tilaus"
 
-#: visma-pay-embedded-card-payment-gateway.php:236
+#: visma-pay-embedded-card-payment-gateway.php:232
 msgid "Cart"
 msgstr "Ostoskori"
 
-#: visma-pay-embedded-card-payment-gateway.php:237
+#: visma-pay-embedded-card-payment-gateway.php:233
 msgid "Checkout"
 msgstr "Kassa"
 
-#: visma-pay-embedded-card-payment-gateway.php:241
+#: visma-pay-embedded-card-payment-gateway.php:237
 msgid "Display card logos"
 msgstr "Näytä maksukorttien logot"
 
-#: visma-pay-embedded-card-payment-gateway.php:246
+#: visma-pay-embedded-card-payment-gateway.php:242
 msgid "Visa"
 msgstr "Visa"
 
-#: visma-pay-embedded-card-payment-gateway.php:248
+#: visma-pay-embedded-card-payment-gateway.php:244
 msgid "Display Visa and Verified by Visa logo below the form."
 msgstr "Näytä Visa ja Verified by Visa logo maksulomakkeen alapuolelle."
 
-#: visma-pay-embedded-card-payment-gateway.php:252
+#: visma-pay-embedded-card-payment-gateway.php:248
 msgid "Mastercard"
 msgstr "Mastercard"
 
-#: visma-pay-embedded-card-payment-gateway.php:254
+#: visma-pay-embedded-card-payment-gateway.php:250
 msgid "Display Mastercard and Mastercard SecureCode logo below the form."
 msgstr ""
 "Näytä Mastercard ja Mastercard SecureCode logo maksulomakkeen alapuolelle."
 
-#: visma-pay-embedded-card-payment-gateway.php:258
+#: visma-pay-embedded-card-payment-gateway.php:254
 msgid "American Express"
 msgstr "American Express"
 
-#: visma-pay-embedded-card-payment-gateway.php:260
+#: visma-pay-embedded-card-payment-gateway.php:256
 msgid "Display American Express logo below the form."
 msgstr "Näytä American Expressin logo maksulomakkeen alapuolelle."
 
-#: visma-pay-embedded-card-payment-gateway.php:264
+#: visma-pay-embedded-card-payment-gateway.php:260
 msgid "Diners Club"
 msgstr "Diners Club"
 
-#: visma-pay-embedded-card-payment-gateway.php:266
+#: visma-pay-embedded-card-payment-gateway.php:262
 msgid "Display Diners Club logo below the form."
 msgstr "Näytä Diners Clubin logo maksulomakkeen alapuolelle."
 
-#: visma-pay-embedded-card-payment-gateway.php:286 build/blocks.js:1
+#: visma-pay-embedded-card-payment-gateway.php:282 build/blocks.js:1
 msgid "Payment card"
 msgstr "Maksukortti"
 
-#: visma-pay-embedded-card-payment-gateway.php:293 build/blocks.js:1
+#: visma-pay-embedded-card-payment-gateway.php:288 build/blocks.js:1
 msgid ""
 "An authorization of 1 %s will be made on your card to save your card "
 "details. The authorization will be automatically cancelled after the order "
@@ -265,7 +267,7 @@ msgstr ""
 "Kortillesi tehdään katevaraus (1 %s) korttitietojesi tallentamista varten. "
 "Katevaraus perutaan automaattisesti kun tilaus on hyväksytty."
 
-#: visma-pay-embedded-card-payment-gateway.php:383
+#: visma-pay-embedded-card-payment-gateway.php:378
 msgid ""
 "Visma Pay (Embedded Card): Creating a temporary authorization to save card "
 "token."
@@ -273,13 +275,13 @@ msgstr ""
 "Visma Pay (Upotettu korttimaksaminen): Luodaan väliaikainen katevaraus "
 "korttitokenin tallentamista varten."
 
-#: visma-pay-embedded-card-payment-gateway.php:448
-#: visma-pay-embedded-card-payment-gateway.php:449
-#: visma-pay-embedded-card-payment-gateway.php:464
+#: visma-pay-embedded-card-payment-gateway.php:444
+#: visma-pay-embedded-card-payment-gateway.php:445
+#: visma-pay-embedded-card-payment-gateway.php:460
 msgid "Visma Pay: No payment methods available for the currency: "
 msgstr "Visma Pay: Ei sallittuja maksutapoja valuutalle: "
 
-#: visma-pay-embedded-card-payment-gateway.php:462
+#: visma-pay-embedded-card-payment-gateway.php:458
 msgid ""
 "Visma Pay: \"Only allow payments in EUR\" is enabled and currency was not "
 "EUR for order: "
@@ -287,17 +289,17 @@ msgstr ""
 "Visma Pay: \"Salli maksaminen vain euroilla\"-asetus on käytössä ja valuutta "
 "ei ollut EUR tilauksessa: "
 
-#: visma-pay-embedded-card-payment-gateway.php:475
-#: visma-pay-embedded-card-payment-gateway.php:638
-#: visma-pay-embedded-card-payment-gateway.php:640
+#: visma-pay-embedded-card-payment-gateway.php:471
+#: visma-pay-embedded-card-payment-gateway.php:634
+#: visma-pay-embedded-card-payment-gateway.php:636
 msgid "Visma Pay (Embedded Card) order"
 msgstr "Visma Pay (Upotettu korttimaksaminen) tilaus"
 
-#: visma-pay-embedded-card-payment-gateway.php:475
+#: visma-pay-embedded-card-payment-gateway.php:471
 msgid "Payment pending. Waiting for result."
 msgstr "Maksaminen kesken. Odottaa tulosta."
 
-#: visma-pay-embedded-card-payment-gateway.php:497
+#: visma-pay-embedded-card-payment-gateway.php:493
 msgid ""
 "Visma Pay (Embedded Card) system is currently in maintenance. Please try "
 "again in a few minutes."
@@ -305,66 +307,66 @@ msgstr ""
 "Visma Pay maksujärjestelmä on huoltotilassa. Yritä maksamista hetken "
 "kuluttua uudelleen."
 
-#: visma-pay-embedded-card-payment-gateway.php:503
-#: visma-pay-embedded-card-payment-gateway.php:517
+#: visma-pay-embedded-card-payment-gateway.php:499
+#: visma-pay-embedded-card-payment-gateway.php:513
 msgid "Payment failed due to an error."
 msgstr "Maksu epäonnistui - Tapahtui virhe."
 
-#: visma-pay-embedded-card-payment-gateway.php:604
+#: visma-pay-embedded-card-payment-gateway.php:600
 msgid "Payment method: Card payment"
 msgstr "Maksutapa: Korttimaksu"
 
-#: visma-pay-embedded-card-payment-gateway.php:605
+#: visma-pay-embedded-card-payment-gateway.php:601
 msgid "Card payment info: "
 msgstr "Korttimaksun lisätiedot: "
 
-#: visma-pay-embedded-card-payment-gateway.php:610
+#: visma-pay-embedded-card-payment-gateway.php:606
 msgid "Verified: "
 msgstr "Varmennus: "
 
-#: visma-pay-embedded-card-payment-gateway.php:613
+#: visma-pay-embedded-card-payment-gateway.php:609
 msgid "Card country: "
 msgstr "Kortin maakoodi: "
 
-#: visma-pay-embedded-card-payment-gateway.php:614
+#: visma-pay-embedded-card-payment-gateway.php:610
 msgid "Client IP country: "
 msgstr "Asiakkaan IP:n maakoodi: "
 
-#: visma-pay-embedded-card-payment-gateway.php:619
+#: visma-pay-embedded-card-payment-gateway.php:615
 msgid "Error: "
 msgstr "Virhe: "
 
-#: visma-pay-embedded-card-payment-gateway.php:624
+#: visma-pay-embedded-card-payment-gateway.php:620
 msgid "Payment method: "
 msgstr "Valittu maksutapa: "
 
-#: visma-pay-embedded-card-payment-gateway.php:638
-#: visma-pay-embedded-card-payment-gateway.php:957
+#: visma-pay-embedded-card-payment-gateway.php:634
+#: visma-pay-embedded-card-payment-gateway.php:966
 msgid "Payment is authorized. Use settle option to capture funds."
 msgstr ""
 "Maksu varmennettu. Maksu veloitetaan painamalla Veloita maksu -painiketta."
 
-#: visma-pay-embedded-card-payment-gateway.php:640
-#: visma-pay-embedded-card-payment-gateway.php:961
+#: visma-pay-embedded-card-payment-gateway.php:636
+#: visma-pay-embedded-card-payment-gateway.php:970
 msgid "Payment accepted."
 msgstr "Maksu hyväksytty."
 
-#: visma-pay-embedded-card-payment-gateway.php:651
+#: visma-pay-embedded-card-payment-gateway.php:645
 msgid "Card token: "
 msgstr "Korttitokeni: "
 
-#: visma-pay-embedded-card-payment-gateway.php:652
+#: visma-pay-embedded-card-payment-gateway.php:646
 msgid "Expiration: "
 msgstr "Erääntyminen: "
 
-#: visma-pay-embedded-card-payment-gateway.php:679
+#: visma-pay-embedded-card-payment-gateway.php:688
 msgid ""
 "Visma Pay (Embedded Card): Succesfully cancelled temporary authorization."
 msgstr ""
 "Visma Pay (Upotettu korttimaksaminen): Väliaikainen katevaraus peruttu "
 "onnistuneesti."
 
-#: visma-pay-embedded-card-payment-gateway.php:686
+#: visma-pay-embedded-card-payment-gateway.php:695
 msgid ""
 "Visma Pay (Embedded Card): Failed to cancel temporary authorization. You "
 "should cancel the authorization using Visma Pay merchant portal."
@@ -372,11 +374,11 @@ msgstr ""
 "Visma Pay (Upotettu korttimaksaminen): Katevarauksen peruminen epäonnistui. "
 "Teidän tulisi perua katevaraus Visma Payn kauppiasportaalissa."
 
-#: visma-pay-embedded-card-payment-gateway.php:708
+#: visma-pay-embedded-card-payment-gateway.php:716
 msgid "Payment was not accepted."
 msgstr "Maksu epäonnistui tai se keskeytettiin."
 
-#: visma-pay-embedded-card-payment-gateway.php:716
+#: visma-pay-embedded-card-payment-gateway.php:724
 msgid ""
 "Transaction status could not be updated after customer returned from the web "
 "page of a bank. Please use the merchant UI to resolve the payment status."
@@ -385,27 +387,27 @@ msgstr ""
 "verkkopankista. Käytä Visma Payn kauppiasportaalia selvittääksesi maksun "
 "tila."
 
-#: visma-pay-embedded-card-payment-gateway.php:724
+#: visma-pay-embedded-card-payment-gateway.php:732
 msgid ""
 "Maintenance break. The transaction is not created and the user has been "
 "notified and transferred back to the cancel address."
 msgstr "Huoltotauko. Maksua ei luotu, ja asiakaalle on ilmoitettu asiasta."
 
-#: visma-pay-embedded-card-payment-gateway.php:754
+#: visma-pay-embedded-card-payment-gateway.php:762
 msgid "Card payment failed. Your card has not been charged."
 msgstr ""
 "Korttimaksun veloitus epäonnistui. Yrittäkää maksamista uudelleen tai "
 "valitkaa jokin toinen maksutapa."
 
-#: visma-pay-embedded-card-payment-gateway.php:756
+#: visma-pay-embedded-card-payment-gateway.php:764
 msgid "Payment was canceled or charge was not accepted."
 msgstr "Maksu keskeytettiin tai maksun veloitus epäonnistui."
 
-#: visma-pay-embedded-card-payment-gateway.php:785
+#: visma-pay-embedded-card-payment-gateway.php:793
 msgid "The card is reported lost or stolen."
 msgstr "Kortti on ilmoitettu kadonneeksi tai varastetuksi."
 
-#: visma-pay-embedded-card-payment-gateway.php:787
+#: visma-pay-embedded-card-payment-gateway.php:795
 msgid ""
 "General decline. The card holder should contact the issuer to find out why "
 "the payment failed."
@@ -413,7 +415,7 @@ msgstr ""
 "Yleinen hylkäys. Kortinhaltijan tulisi ottaa yhteyttä kortinmyöntäjään "
 "selvittääkseen miksi maksu epäonnistui."
 
-#: visma-pay-embedded-card-payment-gateway.php:789
+#: visma-pay-embedded-card-payment-gateway.php:797
 msgid ""
 "Insufficient funds. The card holder should verify that there is balance on "
 "the account and the online payments are actived."
@@ -421,15 +423,15 @@ msgstr ""
 "Riittämättömät varat. Kortinhaltijan tulisi tarkistaa, että kortilla on "
 "katetta ja verkkomaksaminen on aktivoitu kortille."
 
-#: visma-pay-embedded-card-payment-gateway.php:791
+#: visma-pay-embedded-card-payment-gateway.php:799
 msgid "Expired card."
 msgstr "Vanhentunut kortti."
 
-#: visma-pay-embedded-card-payment-gateway.php:793
+#: visma-pay-embedded-card-payment-gateway.php:801
 msgid "Withdrawal amount limit exceeded."
 msgstr "Kortin maksuraja ylittyi."
 
-#: visma-pay-embedded-card-payment-gateway.php:795
+#: visma-pay-embedded-card-payment-gateway.php:803
 msgid ""
 "Restricted card. The card holder should verify that the online payments are "
 "actived."
@@ -437,22 +439,22 @@ msgstr ""
 "Rajoitettu kortti. Kortinhaltijan tulisi varmistaa, että verkkomaksaminen on "
 "aktivoitu kortille."
 
-#: visma-pay-embedded-card-payment-gateway.php:797
+#: visma-pay-embedded-card-payment-gateway.php:805
 msgid ""
 "Timeout communicating with the acquirer. The payment should be tried again "
 "later."
 msgstr ""
 "Yhteysongelma korttimaksujen prosessoijaan. Maksua tulisi yrittää uudelleen."
 
-#: visma-pay-embedded-card-payment-gateway.php:808
+#: visma-pay-embedded-card-payment-gateway.php:816
 msgid "3-D Secure was used."
 msgstr "3-D Secure varmennettu tapahtuma."
 
-#: visma-pay-embedded-card-payment-gateway.php:810
+#: visma-pay-embedded-card-payment-gateway.php:818
 msgid "3-D Secure was not used."
 msgstr "3-D Secure varmennusta ei käytetty."
 
-#: visma-pay-embedded-card-payment-gateway.php:812
+#: visma-pay-embedded-card-payment-gateway.php:820
 msgid ""
 "3-D Secure was attempted but not supported by the card issuer or the card "
 "holder is not participating."
@@ -460,23 +462,23 @@ msgstr ""
 "3-D Secure varmennusta yritettiin, mutta kortinmyöntäjä tai -haltija ei "
 "käytä varmennusta."
 
-#: visma-pay-embedded-card-payment-gateway.php:837
+#: visma-pay-embedded-card-payment-gateway.php:845
 msgid "Payment settled."
 msgstr "Maksu veloitettu."
 
-#: visma-pay-embedded-card-payment-gateway.php:855
+#: visma-pay-embedded-card-payment-gateway.php:863
 msgid "Settle payment"
 msgstr "Veloita maksu"
 
-#: visma-pay-embedded-card-payment-gateway.php:879
+#: visma-pay-embedded-card-payment-gateway.php:887
 msgid "Settlement was successful."
 msgstr "Maksu veloitettiin onnistuneesti."
 
-#: visma-pay-embedded-card-payment-gateway.php:882
+#: visma-pay-embedded-card-payment-gateway.php:890
 msgid "Settlement failed. Validation failed."
 msgstr "Veloitus epäonnistui. Validointi epäonnistui."
 
-#: visma-pay-embedded-card-payment-gateway.php:885
+#: visma-pay-embedded-card-payment-gateway.php:893
 msgid ""
 "Settlement failed. Either the payment has already been settled or the "
 "payment gateway refused to settle payment for given transaction."
@@ -484,46 +486,50 @@ msgstr ""
 "Maksua ei voitu veloittaa. Joko maksu on jo veloitettu, tai luottolaitos "
 "hylkäsi veloituspyynnön."
 
-#: visma-pay-embedded-card-payment-gateway.php:888
+#: visma-pay-embedded-card-payment-gateway.php:896
 msgid "Settlement failed. Unknown error."
 msgstr ""
 "Tuntematon paluuarvo. Mikäli ongelma toistuu, ota yhteyttä "
 "asiakaspalveluumme."
 
-#: visma-pay-embedded-card-payment-gateway.php:895
+#: visma-pay-embedded-card-payment-gateway.php:903
 msgid "Exception, error: "
 msgstr "Exception, virhe: "
 
-#: visma-pay-embedded-card-payment-gateway.php:957
-#: visma-pay-embedded-card-payment-gateway.php:961
+#: visma-pay-embedded-card-payment-gateway.php:966
+#: visma-pay-embedded-card-payment-gateway.php:970
 msgid "Visma Pay (Embedded Card, Subscription) order"
 msgstr "Visma Pay (Upotettu korttimaksaminen, Subscription) tilaus"
 
-#: visma-pay-embedded-card-payment-gateway.php:970
+#: visma-pay-embedded-card-payment-gateway.php:979
 msgid "Duplicate order number."
 msgstr "Duplikaatti tilausnumero."
 
-#: visma-pay-embedded-card-payment-gateway.php:974
+#: visma-pay-embedded-card-payment-gateway.php:983
 msgid "Card token not found."
 msgstr "Korttitokenia ei löytynyt."
 
-#: visma-pay-embedded-card-payment-gateway.php:999
+#: visma-pay-embedded-card-payment-gateway.php:1008
 msgid "Payment failed. The card was not charged. Error: "
 msgstr "Maksu epäonnistui. Korttia ei veloitettu. Virhe: "
 
-#: visma-pay-embedded-card-payment-gateway.php:999
+#: visma-pay-embedded-card-payment-gateway.php:1008
 msgid "Payment failed. The card was not charged."
 msgstr "Maksu epäonnistui. Korttia ei veloitettu."
 
-#: visma-pay-embedded-card-payment-gateway.php:1008
+#: visma-pay-embedded-card-payment-gateway.php:1017
 msgid "Payment failed. Exception: "
 msgstr "Maksu epäonnistui. Exception: "
 
-#: visma-pay-embedded-card-payment-gateway.php:1046
+#: visma-pay-embedded-card-payment-gateway.php:1066
+msgid "The card token %s was successfully deleted"
+msgstr "Korttitokeni %s poistettiin onnistuneesti"
+
+#: visma-pay-embedded-card-payment-gateway.php:1071
 msgid "Failed to delete the card token %s. Return code: %s"
 msgstr "Korttitokenin %s poisto epäonnistui. Paluukoodi: %s"
 
-#: visma-pay-embedded-card-payment-gateway.php:1051
+#: visma-pay-embedded-card-payment-gateway.php:1076
 msgid "Failed to delete the card token %s. Exception: %s"
 msgstr "Korttitokenin %s poisto epäonnistui. Exception: %s"
 
@@ -534,3 +540,6 @@ msgstr "Jokin meni pieleen"
 #: build/blocks.js:1
 msgid "Please check the card information"
 msgstr "Tarkista maksukortin tiedot"
+
+#~ msgid "Allow free trial"
+#~ msgstr "Salli ilmainen kokeilu"
