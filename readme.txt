@@ -8,7 +8,7 @@ Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 WC requires at least: 3.0.0
-WC tested up to: 9.8.1
+WC tested up to: 10.1.2
 
 Visma Pay plugin for Woocommerce.
 
@@ -40,6 +40,10 @@ Card payments
 
 
 == Changelog ==
+
+= 1.2.1 =
+* Updated 'tested up to' versions.
+* Fixed an issue with transient status changes of subscriptions which were handled as terminal cancellations
 
 = 1.2.0 =
 * Updated 'tested up to' versions.
