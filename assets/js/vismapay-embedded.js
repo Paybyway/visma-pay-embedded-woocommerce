@@ -50,7 +50,7 @@
 							window.location.reload();
 							return false;
 						}
-						
+
 						if ( true === result.reload ) {
 							window.location.reload();
 							return;
@@ -125,7 +125,7 @@
 
 		window.addEventListener('message',function(event) {
 			if ( event.origin !== 'https://www.vismapay.com' ) { return false; }
-			
+
 			var data = JSON.parse(event.data);
 			if(data !== null && typeof data.valid !== 'undefined' && data.valid === true) {
 				handleSubmitVismaPayPayment();

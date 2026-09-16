@@ -1,22 +1,22 @@
 === Visma Pay (Embedded Card) for Woocommerce ===
 Contributors: hsuvant
-Donate link: 
+Donate link:
 Tags: payment gateway, visma, pay, verkkomaksut, korttimaksut, vismapay
 Requires at least: 3.3
-Tested up to: 6.8
+Tested up to: 7.1
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 WC requires at least: 3.0.0
-WC tested up to: 10.1.2
+WC tested up to: 11.1.0
 
 Visma Pay plugin for Woocommerce.
 
 == Description ==
 
-This plugin uses the Visma Pay Payment API. 
+This plugin uses the Visma Pay Payment API.
 
-This is a plugin for integrating Visma Pay payment gateway with your Woocommerce store. To accept card payments with this plugin, you need to have an active contract with [Visma Pay](https://www.visma.fi/vismapay/). You can order Visma Pay [here](https://www.visma.fi/vismapay/tilaa-visma-pay/) (See [terms](https://static.vismapay.com/terms/yleiset-ehdot.pdf)).
+This is a plugin for integrating Visma Pay payment gateway with your Woocommerce store. To accept card payments with this plugin, you need to have an active contract with [Visma Pay](https://www.vismapay.fi). You can order Visma Pay [here](https://www.vismapay.fi/tilaa-visma-pay) (See [terms](https://static.vismapay.com/terms/yleiset-ehdot.pdf)).
 
 Compared to the normal Visma Pay payment gateway this plugin embeds a card payment form on your checkout and supports recurring payment using Woocommerce Subscriptions.
 
@@ -40,6 +40,10 @@ Card payments
 
 
 == Changelog ==
+
+= 1.2.2 =
+* Fixed an issue where the card payment could fail to proceed in some browsers if the customer spent more than a few seconds between entering their card details and placing the order.
+* Updated 'tested up to' versions.
 
 = 1.2.1 =
 * Updated 'tested up to' versions.
