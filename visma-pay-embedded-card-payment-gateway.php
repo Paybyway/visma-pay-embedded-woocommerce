@@ -3,13 +3,13 @@
  * Plugin Name: Visma Pay Embedded Card Payment Gateway
  * Plugin URI: https://www.vismapay.com/docs
  * Description: Visma Pay Payment Gateway Embedded Card Integration for Woocommerce
- * Version: 1.2.2
+ * Version: 1.2.3
  * Author: Visma
  * Author URI: https://www.vismapay.fi
  * Text Domain: visma-pay-embedded-card-payment-gateway
  * Domain Path: /languages
  * WC requires at least: 3.0.0
- * WC tested up to: 11.1.0
+ * WC tested up to: 11.1.2
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -527,8 +527,10 @@ function init_visma_pay_embedded_card_gateway()
 		{
 			$order = wc_get_order($order_id);
 
-			if(!$order)
+			if(!$order || empty($order_number))
+			{
 				return null;
+			}
 
 			$order_numbers = $order->get_meta('visma_pay_embedded_card_order_numbers', true, 'edit');
 
@@ -553,6 +555,11 @@ function init_visma_pay_embedded_card_gateway()
 
 		public function check_visma_pay_embedded_card_response()
 		{
+			if(empty($this->private_key) || empty($this->api_key))
+			{
+				$this->visma_pay_embedded_die("Gateway not configured.");
+			}
+
 			if(count($_GET))
 			{
 				require_once(plugin_dir_path( __FILE__ ).'includes/lib/visma_pay_loader.php');
@@ -587,8 +594,9 @@ function init_visma_pay_embedded_card_gateway()
 					$this->visma_pay_embedded_die("Order not found.");
 
 				$wc_order_status = $order->get_status();
+				$result = null;
 
-				if($authcode_confirm === $authcode && $order)
+				if(hash_equals($authcode_confirm, (string)$authcode))
 				{
 					$current_return_code = $order->get_meta('visma_pay_embedded_card_return_code', true, 'edit');
 
@@ -628,6 +636,24 @@ function init_visma_pay_embedded_card_gateway()
 						{
 							$message = $e->getMessage();
 							$this->logger->error('Visma Pay (Embedded Card) REST::getPayment failed, message: ' . $message, $this->logcontext);
+						}
+
+						$is_paid = $this->visma_pay_embedded_card_is_paid($result);
+
+						if($is_paid === null)
+						{
+							$this->logger->info('Visma Pay (Embedded Card): payment status could not be confirmed, order not updated. Order: ' . $order->get_id(), $this->logcontext);
+							$this->visma_pay_embedded_card_redirect($return_code, $order, $result);
+						}
+
+						if($is_paid)
+						{
+							$return_code = 0;
+							$settled = ((int)$result->payment->status === 1) ? 0 : 1;
+						}
+						else if($return_code == 0)
+						{
+							$return_code = 1;
 						}
 
 						switch($return_code)
@@ -749,12 +775,45 @@ function init_visma_pay_embedded_card_gateway()
 				else
 					$this->visma_pay_embedded_die("MAC check failed");
 
-				$cancel_url_option = $this->get_option('cancel_url', '');
-				$card = (isset($result->payment->source->object) && $result->payment->source->object === 'card') ? true : false;
-				$redirect_url = $this->visma_pay_embedded_card_url($return_code, $order, $cancel_url_option, $card);
-				wp_redirect($redirect_url);
-				exit('Ok');
+				$this->visma_pay_embedded_card_redirect($return_code, $order, $result);
 			}
+		}
+
+		protected function visma_pay_embedded_card_is_paid($result)
+		{
+			if(isset($result->result) && (string)$result->result === '2')
+			{
+				return false;
+			}
+
+			if(!isset($result->payment->status) || (string)$result->result !== '0')
+			{
+				return null;
+			}
+
+			switch((int)$result->payment->status)
+			{
+				case 1:
+				case 4:
+				case 5:
+				case 15:
+					return true;
+				case 2:
+				case 3:
+				case 14:
+					return false;
+				default:
+					return null;
+			}
+		}
+
+		protected function visma_pay_embedded_card_redirect($return_code, $order, $result)
+		{
+			$cancel_url_option = $this->get_option('cancel_url', '');
+			$card = isset($result->payment->source->object) && $result->payment->source->object === 'card';
+			$redirect_url = $this->visma_pay_embedded_card_url($return_code, $order, $cancel_url_option, $card);
+			wp_redirect($redirect_url);
+			exit('Ok');
 		}
 
 		protected function visma_pay_embedded_card_url($return_code, $order, $cancel_url_option = '', $card = false)
@@ -923,7 +982,7 @@ function init_visma_pay_embedded_card_gateway()
 			$this->logger->error('Visma Pay Embedded - return failed. Error: ' . $msg, $this->logcontext);
 			status_header(400);
 			nocache_headers();
-			die($msg);
+			die('Payment return failed.');
 		}
 
 		public function scheduled_subscription_payment( $amount_to_charge, $order)
@@ -1331,7 +1390,7 @@ function init_visma_pay_embedded_card_gateway()
 			else
 				$plugin_info .= '0';
 
-			$plugin_info .= '|1.2.2';
+			$plugin_info .= '|1.2.3';
 
 			return $plugin_info;
 		}
